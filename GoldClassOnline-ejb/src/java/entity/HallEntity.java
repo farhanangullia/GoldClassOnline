@@ -28,12 +28,14 @@ public class HallEntity implements Serializable {
     private String name;
     private Integer row;
     private Integer col;
+    private Boolean enabled;
     @ManyToOne
     private CinemaEntity cinemaEntity;
     @OneToMany (mappedBy="hallEntity")
     private List<ScreeningSchedule> screeningSchedules;
 
      public HallEntity() {
+             this.enabled = true;
     }
 
     public HallEntity(String name, Integer row, Integer col) {
@@ -113,6 +115,14 @@ public class HallEntity implements Serializable {
 
     public void setScreeningSchedules(List<ScreeningSchedule> screeningSchedules) {
         this.screeningSchedules = screeningSchedules;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
     
 }

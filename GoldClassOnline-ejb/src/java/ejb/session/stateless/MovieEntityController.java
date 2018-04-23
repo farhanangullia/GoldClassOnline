@@ -34,22 +34,22 @@ public class MovieEntityController implements MovieEntityControllerLocal {
     
     @Override
     public void updateMovieEntity(MovieEntity movieEntity) {
-        em.merge(movieEntity);
+        MovieEntity me = retrieveMovieByMovieId(movieEntity.getId());
+        me.setCast(movieEntity.getCast());
+        me.setDirector(movieEntity.getDirector());
+        me.setGenre(movieEntity.getGenre());
+        me.setLanguage(movieEntity.getLanguage());
+        me.setRatings(movieEntity.getRatings());
+        me.setRunningTime(movieEntity.getRunningTime());
+        me.setSypnosis(movieEntity.getSypnosis());
+        me.setTitle(movieEntity.getTitle());
     }
     
     @Override
-    public MovieEntity retrieveMovieByMovieId(Long movieId) throws MovieNotFoundException
+    public MovieEntity retrieveMovieByMovieId(Long movieId) 
     {
         MovieEntity movieEntity = em.find(MovieEntity.class, movieId);
-        
-        if(movieEntity != null)
-        {
             return movieEntity;
-        }
-        else
-        {
-            throw new MovieNotFoundException("Cinema ID " + movieId + " does not exist!");
-        }               
     }
     
     @Override

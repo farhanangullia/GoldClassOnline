@@ -9,6 +9,7 @@ import entity.CinemaEntity;
 import entity.HallEntity;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.HallNotFoundException;
 
 /**
  *
@@ -21,6 +22,10 @@ public interface HallEntityControllerLocal {
 
     public List<HallEntity> retrieveAllHalls(Long cinemaId);
 
-    public HallEntity createHallEntity(HallEntity hallEntity, CinemaEntity cinemaEntity);
+    public HallEntity createHallEntity(HallEntity hallEntity, Long cinemaEntityId);
+
+    public void deleteHall(Long hallId) throws HallNotFoundException;
+
+    public HallEntity retrieveHallByHallId(Long hallId);
     
 }

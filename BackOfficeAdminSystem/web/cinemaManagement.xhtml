@@ -9,255 +9,208 @@
     <div class="ui-g-12 ui-md-6 ui-lg-4"></div>
     <div class ="ui-g-12 ui-md-6 ui-lg-4">
         <ui:define name="content">
+
+            <p:breadCrumb>
+                <p:menuitem value="Home" url="adminMainPage.xhtml" />
+                <p:menuitem value="Cinema Management" url="cinemaManagement.xhtml" />
+            </p:breadCrumb>   
             
-        <h3>System Administration :: Cinema Management</h3>
-        <br/>
-        
-        <h:form>
-            
-            <p:menubar>
-                
-                <p:submenu label="Create New Cinema" icon="ui-icon-document">
-                    <p:menuitem value="Create New Cinema" onclick="PF('dialogCreateNewCinema').show()" icon="ui-icon-plusthick" />
-                </p:submenu>
-                
-            </p:menubar>
+            <h3>System Administration :: Cinema Management</h3>
             <br/>
-            
-        </h:form>
 
-        <h:form id="formAllCinemas">
-            
-            <p:messages id="messages" redisplay="false" closable="true" />
-            
-            <p:dataTable id="dataTableAllCinemas" widgetVar="dataTableAllCinemas" value="#{cinemaManagementManagedBean.cinemaEntities}" var="cinemaEntity" rowKey="#{cinemaEntity.id}" rowIndexVar="row"
-                         filteredValue="#{cinemaManagementManagedBean.filteredCinemaEntities}"
-                         rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
-                
-                <f:facet name="header">
-                    <p:outputPanel style="text-align: right;">
-                        <h:outputText value="Search all fields:" />
-                        <p:inputText id="globalFilter" onkeyup="PF('dataTableAllCinemas').filter()" style="width:300px" placeholder="Enter keyword"/>
-                    </p:outputPanel>
-                </f:facet>
-                
-                <p:column headerText="Cinema ID" sortBy="#{cinemaEntity.id}" filterBy="#{cinemaEntity.id}" filterMatchMode="contains">
-                    <h:outputText value="#{cinemaEntity.id}" />
-                </p:column>
-                
-                <p:column headerText="Cinema Name" sortBy="#{cinemaEntity.name}" filterBy="#{cinemaEntity.name}" filterMatchMode="contains">
-                    <h:outputText value="#{cinemaEntity.name}" />
-                </p:column>
-                
-                <p:column headerText="Address" sortBy="#{cinemaEntity.address}" filterBy="#{cinemaEntity.address}" filterMatchMode="contains">
-                    <h:outputText value="#{cinemaEntity.address}" />
-                </p:column>
-                
-                <p:column headerText="Postal Code" sortBy="#{cinemaEntity.postalCode}" filterBy="#{cinemaEntity.postalCode}" filterMatchMode="contains">
-                    <h:outputText value="#{cinemaEntity.postalCode}" />
-                </p:column>
-                
-   
-                <p:column headerText="Action" >
-                    <p:commandButton update="formViewCinema" oncomplete="PF('dialogViewCinema').show()" icon="ui-icon-document" title="View">
-                        <f:setPropertyActionListener value="#{cinemaEntity}" target="#{cinemaManagementManagedBean.selectedCinemaEntityToView}" />
-                    </p:commandButton>
-                    <p:commandButton update="formUpdateCinema" oncomplete="PF('dialogUpdateCinema').show()" icon="ui-icon-pencil" title="Update">
-                        <f:setPropertyActionListener value="#{cinemaEntity}" target="#{cinemaManagementManagedBean.selectedCinemaEntityToUpdate}" />
-                    </p:commandButton>
-                    <p:commandButton icon="ui-icon-trash" actionListener="#{cinemaManagementManagedBean.deleteCinema}" update="formAllCinemas:dataTableAllCinemas formAllCinemas:messages">
-                        <f:attribute name="cinemaEntityToDelete" value="#{cinemaEntity}" />
-                        <p:confirm header="Confirmation" message="Are you sure you want to delete #{cinemaEntity.name} (ID: #{cinemaEntity.id})?" icon="ui-icon-alert" />
-                    </p:commandButton>
-                </p:column>
-                
-            </p:dataTable>
-            
-            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-            </p:confirmDialog>
-            
-        </h:form>
-        
-        <h:form id="formCreateNewCinema">
-            
-            <p:dialog id="dialogCreateNewCinema" widgetVar="dialogCreateNewCinema" header="Create New Cinema" closable="true">
+            <h:form>
 
-                <p:messages id="messagesCreateNewCinema" redisplay="false" />
-                
-                <p:panelGrid>
-                    
-                    <p:row>
-                        <p:column>
-                            <p:outputLabel for="cinemaName" value="Cinema Name: " />
-                        </p:column>
-                        <p:column>
-                            <p:inputText id="cinemaName" value="#{cinemaManagementManagedBean.newCinemaEntity.name}" required="true" requiredMessage="Cinema name is required" />
-                        </p:column>
-                        <p:column>
-                            <p:message for="cinemaName" />
-                        </p:column>
-                    </p:row>
-                    
-                    <p:row>
-                        <p:column>
-                            <p:outputLabel for="address" value="Address: " />
-                        </p:column>
-                        <p:column>
-                            <p:inputText id="address" value="#{cinemaManagementManagedBean.newCinemaEntity.address}" required="true" requiredMessage="Address is required" />
-                        </p:column>
-                        <p:column>
-                            <p:message for="address" />
-                        </p:column>
-                    </p:row>
-                    
-                    <p:row>
-                        <p:column>
-                            <p:outputLabel for="postalCode" value="Postal Code: " />
-                        </p:column>
-                        <p:column>
-                            <p:inputText id="postalCode" value="#{cinemaManagementManagedBean.newCinemaEntity.postalCode}" required="true" requiredMessage="Postal code is required" />
-                        </p:column>
-                        <p:column>
-                            <p:message for="postalCode" />
-                        </p:column>
-                    </p:row>
-          
-                    <p:row>
-                        <p:column colspan="3">
-                            <p:commandButton type="reset" value="Clear" />&nbsp;
-                            <p:commandButton value="Create New Cinema" update="@form formAllCinemas:dataTableAllCinemas" actionListener="#{cinemaManagementManagedBean.createNewCinema}" oncomplete="PF('dialogCreateNewCinema').show();" />
-                        </p:column>
-                    </p:row>
-                    
-                </p:panelGrid>
+                <p:menubar>
 
-            </p:dialog>
-            
-        </h:form>
-        
-        <h:form id="formViewCinema">
-            
-            <p:dialog id="dialogViewCinema" widgetVar="dialogViewCinema" header="View Cinema" closable="true">
+                    <p:submenu label="Create New Cinema" icon="ui-icon-document">
+                        <p:menuitem value="Create New Cinema" onclick="PF('dialogCreateNewCinema').show()" icon="ui-icon-plusthick" />
+                    </p:submenu>
 
-                <p:panelGrid>
-                    
-                    <p:row>
-                        <p:column>
-                            <h:outputLabel value="Cinema ID: " />
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{cinemaManagementManagedBean.selectedCinemaEntityToView.id}" />
-                        </p:column>
-                    </p:row>
-                    
-                    <p:row>
-                        <p:column>
-                            <h:outputLabel value="Name: " />
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{cinemaManagementManagedBean.selectedCinemaEntityToView.name}" />
-                        </p:column>
-                    </p:row>
-                    
-                    <p:row>
-                        <p:column>
-                            <h:outputLabel value="Address: " />
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{cinemaManagementManagedBean.selectedCinemaEntityToView.address}" />
-                        </p:column>
-                    </p:row>
-                    
-                    <p:row>
-                        <p:column>
-                            <h:outputLabel value="Postal Code: " />
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{cinemaManagementManagedBean.selectedCinemaEntityToView.postalCode}" />
-                        </p:column>
-                    </p:row>
-                    
-                    <p:row>
-                        <p:column>
-                            <h:outputLabel value="Number Of Halls: " />
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{cinemaManagementManagedBean.selectedCinemaEntityToView.halls.size()}" />
-                        </p:column>
-                    </p:row>
-                    
-                    <p:row>
-                        <p:column colspan="3">
-                            <p:commandButton action="hallManagement.xhtml" value="View and Add Hall"/>
-                        </p:column>
-                    </p:row>
-                    
-                </p:panelGrid>
+                </p:menubar>
+                <br/>
 
-            </p:dialog>
-            
-        </h:form>
-        
-        <h:form id="formUpdateCinema">
-            
-            <p:dialog id="dialogUpdateCinema" widgetVar="dialogUpdateCinema" header="Update Cinema" closable="true">
+            </h:form>
 
-                <p:messages id="messagesUpdateCinema" redisplay="false" />
-                
-                <p:panelGrid>
-                    
-   
-                    <p:row>
-                        <p:column>
-                            <p:outputLabel for="name" value="Name: " />
-                        </p:column>
-                        <p:column>
-                            <p:inputText id="name" value="#{cinemaManagementManagedBean.selectedCinemaEntityToUpdate.name}" required="true" requiredMessage="Cinema name is required" />
-                        </p:column>
-                        <p:column>
+            <h:form id="formAllCinemas">
+
+                <p:messages id="messages" redisplay="false" closable="true" />
+
+                <p:dataTable id="dataTableAllCinemas" widgetVar="dataTableAllCinemas" value="#{cinemaManagementManagedBean.cinemaEntities}" var="cinemaEntity" rowKey="#{cinemaEntity.id}" rowIndexVar="row"
+                             filteredValue="#{cinemaManagementManagedBean.filteredCinemaEntities}"
+                             rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+
+                    <f:facet name="header">
+                        <p:outputPanel style="text-align: right;">
+                            <h:outputText value="Search all fields:" />
+                            <p:inputText id="globalFilter" onkeyup="PF('dataTableAllCinemas').filter()" style="width:300px" placeholder="Enter keyword"/>
+                        </p:outputPanel>
+                    </f:facet>
+
+                    <p:column headerText="Cinema ID" sortBy="#{cinemaEntity.id}" filterBy="#{cinemaEntity.id}" filterMatchMode="contains">
+                        <h:outputText value="#{cinemaEntity.id}" />
+                    </p:column>
+
+                    <p:column headerText="Cinema Name" sortBy="#{cinemaEntity.name}" filterBy="#{cinemaEntity.name}" filterMatchMode="contains">
+                        <h:outputText value="#{cinemaEntity.name}" />
+                    </p:column>
+
+                    <p:column headerText="Address" sortBy="#{cinemaEntity.address}" filterBy="#{cinemaEntity.address}" filterMatchMode="contains">
+                        <h:outputText value="#{cinemaEntity.address}" />
+                    </p:column>
+
+                    <p:column headerText="Postal Code" sortBy="#{cinemaEntity.postalCode}" filterBy="#{cinemaEntity.postalCode}" filterMatchMode="contains">
+                        <h:outputText value="#{cinemaEntity.postalCode}" />
+                    </p:column>
+
+
+                    <p:column headerText="Action" >
+                        <p:commandButton update="formViewCinema" oncomplete="PF('dialogViewCinema').show()" icon="ui-icon-document" title="View">
+                            <f:setPropertyActionListener value="#{cinemaEntity}" target="#{cinemaManagementManagedBean.selectedCinemaEntityToView}" />
+                        </p:commandButton>
+                        <p:commandButton update="formUpdateCinema" oncomplete="PF('dialogUpdateCinema').show()" icon="ui-icon-pencil" title="Update">
+                            <f:setPropertyActionListener value="#{cinemaEntity}" target="#{cinemaManagementManagedBean.selectedCinemaEntityToUpdate}" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{cinemaManagementManagedBean.deleteCinema}" update="formAllCinemas:dataTableAllCinemas formAllCinemas:messages">
+                            <f:attribute name="cinemaEntityToDelete" value="#{cinemaEntity}" />
+                            <p:confirm header="Confirmation" message="Are you sure you want to delete #{cinemaEntity.name} (ID: #{cinemaEntity.id})?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+            </h:form>
+
+            <h:form id="formCreateNewCinema">
+
+                <p:dialog id="dialogCreateNewCinema" widgetVar="dialogCreateNewCinema" header="Create New Cinema" closable="true">
+
+                    <p:messages id="messagesCreateNewCinema" redisplay="false" />
+
+                    <p:panelGrid>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="cinemaName" value="Cinema Name: " />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="cinemaName" value="#{cinemaManagementManagedBean.newCinemaEntity.name}" required="true" requiredMessage="Cinema name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="cinemaName" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="address" value="Address: " />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="address" value="#{cinemaManagementManagedBean.newCinemaEntity.address}" required="true" requiredMessage="Address is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="address" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="postalCode" value="Postal Code: " />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="postalCode" value="#{cinemaManagementManagedBean.newCinemaEntity.postalCode}" required="true" requiredMessage="Postal code is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="postalCode" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton type="reset" value="Clear" />&nbsp;
+                                <p:commandButton value="Create New Cinema" update="@form formAllCinemas:dataTableAllCinemas" actionListener="#{cinemaManagementManagedBean.createNewCinema}" oncomplete="PF('dialogCreateNewCinema').show();" />
+                            </p:column>
+                        </p:row>
+
+                    </p:panelGrid>
+
+                </p:dialog>
+
+            </h:form>
+
+            <h:form id="formViewCinema">
+
+                <p:dialog id="dialogViewCinema" widgetVar="dialogViewCinema" header="View Cinema" closable="true">
+
+                    <p:panelGrid>
+
+                        <p:commandButton icon="ui-icon-document" title="View" actionListener="#{cinemaManagementManagedBean.viewCinemaDetails}">
+                            <f:attribute name="cinemaId" value="#{cinemaManagementManagedBean.selectedCinemaEntityToView.id}"/>
+                        </p:commandButton>
+
+
+                    </p:panelGrid>
+
+                </p:dialog>
+
+            </h:form>
+
+            <h:form id="formUpdateCinema">
+
+                <p:dialog id="dialogUpdateCinema" widgetVar="dialogUpdateCinema" header="Update Cinema" closable="true">
+
+                    <p:messages id="messagesUpdateCinema" redisplay="false" />
+
+                    <p:panelGrid>
+
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="name" value="Name: " />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="name" value="#{cinemaManagementManagedBean.selectedCinemaEntityToUpdate.name}" required="true" requiredMessage="Cinema name is required" />
+                            </p:column>
                             <p:message for="name" />
-                        </p:column>
-                    </p:row>
-                    
-                    <p:row>
-                        <p:column>
-                            <p:outputLabel for="address" value="Address: " />
-                        </p:column>
-                        <p:column>
-                            <p:inputText id="address" value="#{cinemaManagementManagedBean.selectedCinemaEntityToUpdate.address}" required="true" requiredMessage="Address is required" />
-                        </p:column>
-                        <p:column>
-                            <p:message for="address" />
-                        </p:column>
-                    </p:row>
-                    
-                    <p:row>
-                        <p:column>
-                            <p:outputLabel for="postalCode" value="Postal Code: " />
-                        </p:column>
-                        <p:column>
-                            <p:inputText id="postalCode" value="#{cinemaManagementManagedBean.selectedCinemaEntityToUpdate.postalCode}" required="true" requiredMessage="Postal code is required" />
-                        </p:column>
-                        <p:column>
-                            <p:message for="postalCode" />
-                        </p:column>
-                    </p:row>
-                    
-                    <p:row>
-                        <p:column colspan="3">
-                            <p:commandButton value="Update Cinema" update="@form formAllCinemas:dataTableAllCinemas" actionListener="#{cinemaManagementManagedBean.updateCinema}" oncomplete="PF('dialogUpdateCinema').show();" />
-                        </p:column>
-                    </p:row>
-                    
-                </p:panelGrid>
+                        </p:row>
 
-            </p:dialog>
-            
-        </h:form>
-                 
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="address" value="Address: " />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="address" value="#{cinemaManagementManagedBean.selectedCinemaEntityToUpdate.address}" required="true" requiredMessage="Address is required" />
+                            </p:column>
+                            <p:message for="address" />
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="postalCode" value="Postal Code: " />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="postalCode" value="#{cinemaManagementManagedBean.selectedCinemaEntityToUpdate.postalCode}" required="true" requiredMessage="Postal code is required" />
+                            </p:column>
+                            <p:message for="postalCode" />
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton value="Update Cinema" update="@form formAllCinemas:dataTableAllCinemas" actionListener="#{cinemaManagementManagedBean.updateCinema}" oncomplete="PF('dialogUpdateCinema').show();" />
+                            </p:column>
+                        </p:row>
+
+                    </p:panelGrid>
+
+                </p:dialog>
+
+            </h:form>
+
         </ui:define>
-            </div>
+    </div>
     <div class="ui-g-12 ui-md-6 ui-lg-4"></div>
 </ui:composition>

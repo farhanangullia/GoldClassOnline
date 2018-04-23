@@ -40,18 +40,11 @@ public class CinemaEntityController implements CinemaEntityControllerLocal {
     }
        
     @Override
-    public CinemaEntity retrieveCinemaByCinemaId(Long cinemaId) throws CinemaNotFoundException
+    public CinemaEntity retrieveCinemaByCinemaId(Long cinemaId)
     {
         CinemaEntity cinemaEntity = em.find(CinemaEntity.class, cinemaId);
-        
-        if(cinemaEntity != null)
-        {
-            return cinemaEntity;
-        }
-        else
-        {
-            throw new CinemaNotFoundException("Cinema ID " + cinemaId + " does not exist!");
-        }               
+
+            return cinemaEntity;        
     }
     
     @Override

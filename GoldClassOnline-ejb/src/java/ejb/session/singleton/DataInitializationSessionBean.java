@@ -70,7 +70,7 @@ public class DataInitializationSessionBean {
            CinemaEntity cinemaEntity = cinemaEntityControllerLocal.createCinemaEntity(new CinemaEntity("Star Movie", "Kent Ridge Drive", "123456"));
            cinemaEntity.setEnabled(Boolean.TRUE);
            
-           HallEntity hallEntity = hallEntityControllerLocal.createHallEntity(new HallEntity("Premium Suite", 4, 5), cinemaEntity);
+           HallEntity hallEntity = hallEntityControllerLocal.createHallEntity(new HallEntity("Premium Suite", 4, 5), cinemaEntity.getId());
            
        } catch(Exception ex)
         {

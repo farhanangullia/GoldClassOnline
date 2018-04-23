@@ -9,6 +9,7 @@ import ejb.session.stateless.CinemaEntityControllerLocal;
 import ejb.session.stateless.HallEntityControllerLocal;
 import entity.CinemaEntity;
 import entity.HallEntity;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +80,13 @@ public class CinemaManagementManagedBean implements Serializable {
         {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
+    }
+    
+    public void viewCinemaDetails(ActionEvent event) throws IOException {
+        
+        Long cinemaEntityToViewId = (Long) event.getComponent().getAttributes().get("cinemaId");
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("cinemaIdToView", cinemaEntityToViewId);
+        FacesContext.getCurrentInstance().getExternalContext().redirect("viewCinemaDetails.xhtml");
     }
     
     public void deleteCinema(ActionEvent event)

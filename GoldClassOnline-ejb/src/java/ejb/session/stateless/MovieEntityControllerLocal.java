@@ -23,7 +23,7 @@ public interface MovieEntityControllerLocal {
 
     public List<MovieEntity> retrieveAllMovieEntities();
 
-    public MovieEntity retrieveMovieByMovieId(Long movieId) throws MovieNotFoundException;
+    public MovieEntity retrieveMovieByMovieId(Long movieId);
 
     public void deleteMovie(Long movieId) throws MovieNotFoundException;
     

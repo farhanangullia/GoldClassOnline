@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.HallNotFoundException;
 
 /**
  *
@@ -24,19 +25,23 @@ public class HallEntityController implements HallEntityControllerLocal {
     private EntityManager em;
     
     @Override
-    public HallEntity createHallEntity(HallEntity hallEntity, CinemaEntity cinemaEntity) {
+    public HallEntity createHallEntity(HallEntity hallEntity, Long cinemaEntityId) {
+        CinemaEntity cinemaEntity = em.find(CinemaEntity.class, cinemaEntityId);
+        hallEntity.setCinemaEntity(cinemaEntity);
         em.persist(hallEntity);
+        cinemaEntity.getHalls().add(hallEntity);
         em.flush();
         em.refresh(hallEntity);
-        hallEntity.setCinemaEntity(cinemaEntity);
-        cinemaEntity.getHalls().add(hallEntity);
         
         return hallEntity;
     }
     
     @Override
     public void updateHallEntity(HallEntity hallEntity) {
-        em.merge(hallEntity);
+         HallEntity he = retrieveHallByHallId(hallEntity.getId());
+        he.setRow(hallEntity.getRow());
+        he.setCol(hallEntity.getCol());
+        he.setName(hallEntity.getName());
     }
     
     @Override
@@ -46,6 +51,24 @@ public class HallEntityController implements HallEntityControllerLocal {
         
         return query.getResultList();
     }
+    
+      @Override
+    public HallEntity retrieveHallByHallId (Long hallId)
+    {
+        HallEntity hallEntity = em.find(HallEntity.class, hallId);
 
-   
+            return hallEntity;        
+    }
+
+     @Override
+    public void deleteHall(Long hallId) throws HallNotFoundException
+    {
+        if (hallId != null) {
+            HallEntity hallEntityToRemove = retrieveHallByHallId(hallId);
+            hallEntityToRemove .setEnabled(Boolean.FALSE);
+        } else {
+            throw new HallNotFoundException("Id not provided for Hall to be deleted");
+        }
+    }
+
 }

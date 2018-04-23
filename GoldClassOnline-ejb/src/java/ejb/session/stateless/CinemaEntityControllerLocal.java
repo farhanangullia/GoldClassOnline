@@ -23,7 +23,7 @@ public interface CinemaEntityControllerLocal {
 
     public List<CinemaEntity> retrieveAllCinemaEntities();
 
-    public CinemaEntity retrieveCinemaByCinemaId(Long cinemaId) throws CinemaNotFoundException;
+    public CinemaEntity retrieveCinemaByCinemaId(Long cinemaId);
 
     public void deleteCinema(Long cinemaId) throws CinemaNotFoundException;
     

@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./template/defaultTemplate.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="content">
+
+        <h3>System Administration :: Cinema Management :: Hall Management</h3>
+
+<!--        <h:form>
+        <p:menubar>
+            <p:submenu label="Create New Hall" icon="ui-icon-document">
+                <p:menuitem value="Create New Hall" onclick="PF('dialogCreateNewHall').show()" icon="ui-icon-plusthick" />
+            </p:submenu>            
+        </p:menubar>
+        </h:form>
+        <br/>
+        
+        <h:form id="formAllHalls">
+            
+             <p:messages id="messages" redisplay="false" closable="true" />
+
+        <p:dataTable id="dataTableAllHalls" var="hallEntity" value="#{hallManagementManagedBean.hallEntities}">
+            <p:column headerText="Hall Id">
+                <h:outputText value="#{hallEntity.id}" />
+            </p:column>
+
+            <p:column headerText="Hall Name">
+                <h:outputText value="#{hallEntity.name}" />
+            </p:column>
+
+        </p:dataTable>
+    </h:form>   
+        
+         <h:form id="formCreateNewHall">
+            
+            <p:dialog id="dialogCreateNewHall" widgetVar="dialogCreateNewHall" header="Create New Hall" closable="true">
+
+                <p:messages id="messagesCreateNewHall" redisplay="false" />
+                
+                <p:panelGrid>
+                    
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="hallName" value="Hall Name: " />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="hallName" value="#{hallManagementManagedBean.newHallEntity.name}" required="true" requiredMessage="Hall name is required" />
+                        </p:column>
+                            <p:message for="hallName" />
+                    </p:row>
+                    
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="hallRow" value="Row: " />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="hallRow" value="#{hallManagementManagedBean.newHallEntity.row}" required="true" requiredMessage="Number of rows is required" />
+                        </p:column>
+                            <p:message for="hallRow" />
+                    </p:row>
+                    
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="hallCol" value="Column: " />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="hallCol" value="#{hallManagementManagedBean.newHallEntity.col}" required="true" requiredMessage="Number of cols is required" />
+                        </p:column>
+                            <p:message for="hallCol" />
+                    </p:row>
+                    
+                    <p:row>
+                        <p:column colspan="3">
+                            <p:commandButton type="reset" value="Clear" />&nbsp;
+                            <p:commandButton value="Create New Hall" update="@form formAllHalls:dataTableAllHalls" actionListener="#{hallManagementManagedBean.createNewHall}" oncomplete="PF('dialogCreateNewHall').show();" />
+                        </p:column>
+                    </p:row>
+                    
+                </p:panelGrid>
+            </p:dialog>  
+        </h:form>-->
+
+    </ui:define>
+
+</ui:composition>

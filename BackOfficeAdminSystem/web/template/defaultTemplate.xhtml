@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+    
+    <h:head>
+        <title>Golden Screen Online Movie Ticketing System</title>      
+        <h:outputStylesheet library="css" name="default.css" />
+    </h:head>
+    <h:body>
+        
+        <p:layout fullPage="true">
+            
+            <p:layoutUnit position="north">
+                
+                <h1>Golden Screen Online Movie Ticketing System</h1>
+            
+                
+            </p:layoutUnit>
+            
+            <p:layoutUnit size="200" position="west">
+                
+                <h3>Main Menu</h3>
+                <br/>
+                
+                <h:form>
+                    
+                    <p:menu style="width:180px;">
+
+                        <p:submenu label="Main">
+                            <p:menuitem value="Home" outcome="index" icon="ui-icon-home" />
+                            <p:menuitem value="Logout" actionListener="#{indexManagedBean.logout}" icon="ui-icon-unlocked" rendered="#{sessionScope['isLogin']}" />
+                        </p:submenu>
+                        
+                        
+                        <p:submenu label="System Administration">
+                            <p:menuitem value="Cinema Management" outcome="cinemaManagement.xhtml" icon="ui-icon-person" />                 
+                            <p:menuitem value="Movie Management" outcome="movieManagement.xhtml" icon="ui-icon-search" />
+                            
+                        </p:submenu>
+                        
+                    </p:menu>
+                    
+                </h:form>
+                
+            </p:layoutUnit>
+            
+            <p:layoutUnit position="center" >
+                
+                <ui:insert name="content">Content</ui:insert>
+                
+            </p:layoutUnit>
+            
+            <p:layoutUnit position="south" >
+                
+                <h6>&copy; Golden Screen Online Movie Ticketing System, Est. 2018</h6>
+                
+            </p:layoutUnit>
+        
+        </p:layout>
+        
+    </h:body>
+    
+</html>

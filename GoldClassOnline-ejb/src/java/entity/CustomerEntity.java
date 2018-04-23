@@ -7,11 +7,14 @@ package entity;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import util.security.CryptographicHelper;
 
 /**
  *
@@ -24,24 +27,31 @@ public class CustomerEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(length = 32, nullable = false)
     private String firstName;
+    @Column(length = 32, nullable = false)
     private String lastName;
+    @Column(nullable = false)
     private String age;
+    @Column(length = 15, unique = true, nullable = false)
     private String username;
+    @Column(columnDefinition = "CHAR(32)")
     private String password;
-    @OneToMany (mappedBy="customerEntity")
+    @Column(columnDefinition = "CHAR(32)")
+    private String salt;
+    @OneToMany(mappedBy = "customerEntity", fetch = FetchType.EAGER)
     private List<TicketEntity> ticketEntities;
 
     public CustomerEntity() {
+        this.salt = CryptographicHelper.getInstance().generateRandomString(32);
     }
 
-    public CustomerEntity(String firstName, String lastName, String age, String username, String password, List<TicketEntity> ticketEntities) {
+    public CustomerEntity(String firstName, String lastName, String age, String username, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.username = username;
-        this.password = password;
-        this.ticketEntities = ticketEntities;
+        this.password = CryptographicHelper.getInstance().byteArrayToHexString(CryptographicHelper.getInstance().doMD5Hashing(password + this.salt));
     }
 
     public String getAge() {
@@ -114,7 +124,11 @@ public class CustomerEntity implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        if (password != null) {
+            this.password = CryptographicHelper.getInstance().byteArrayToHexString(CryptographicHelper.getInstance().doMD5Hashing(password + this.salt));
+        } else {
+            this.password = null;
+        }
     }
 
     public List<TicketEntity> getTicketEntities() {
@@ -124,5 +138,19 @@ public class CustomerEntity implements Serializable {
     public void setTicketEntities(List<TicketEntity> ticketEntities) {
         this.ticketEntities = ticketEntities;
     }
-    
+
+    /**
+     * @return the salt
+     */
+    public String getSalt() {
+        return salt;
+    }
+
+    /**
+     * @param salt the salt to set
+     */
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
 }

@@ -7,7 +7,9 @@ package entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,10 +26,11 @@ public class TicketEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(precision = 11, scale = 2)
     private BigDecimal price;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private ScreeningSchedule screeningSchedule;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private CustomerEntity customerEntity;
 
     public TicketEntity() {

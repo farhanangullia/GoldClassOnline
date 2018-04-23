@@ -8,7 +8,9 @@ package entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,27 +31,32 @@ public class ScreeningSchedule implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date screeningTime;
-    @ManyToOne
+    private Date screeningDateTime;
+    @Column
+    private boolean available;
+    @ManyToOne(fetch = FetchType.EAGER)
     private HallEntity hallEntity;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private MovieEntity movieEntity;
-    @OneToMany (mappedBy="screeningSchedule")
+    @OneToMany(mappedBy = "screeningSchedule", fetch = FetchType.EAGER)
     private List<TicketEntity> ticketEntities;
 
-     public ScreeningSchedule() {
+    public ScreeningSchedule() {
     }
-     
-    public ScreeningSchedule(Date screeningTime) {
-        this.screeningTime = screeningTime;
+
+    public ScreeningSchedule(Date screeningTime, boolean available, HallEntity hallEntity, MovieEntity movieEntity) {
+        this.screeningDateTime = screeningTime;
+        this.available = available;
+        this.hallEntity = hallEntity;
+        this.movieEntity = movieEntity;
     }
 
     public Date getScreeningTime() {
-        return screeningTime;
+        return screeningDateTime;
     }
 
-    public void setScreeningTime(Date screeningTime) {
-        this.screeningTime = screeningTime;
+    public void setScreeningTime(Date screeningDateTime) {
+        this.screeningDateTime = screeningDateTime;
     }
 
     public Long getId() {
@@ -108,5 +115,19 @@ public class ScreeningSchedule implements Serializable {
     public void setTicketEntities(List<TicketEntity> ticketEntities) {
         this.ticketEntities = ticketEntities;
     }
-    
+
+    /**
+     * @return the available
+     */
+    public boolean isAvailable() {
+        return available;
+    }
+
+    /**
+     * @param available the available to set
+     */
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
 }

@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,24 +25,29 @@ public class MovieEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String title;
     private String genre;
     private String cast;
     private String director;
-    private String runningTime;
+    @Column(nullable = false)
+    private Integer runningTime;
     private String language;
     private String sypnosis;
+    @Column(nullable = false)
     private String ratings;
     private Boolean enabled;
+    @Column
+    private String imagePath;
     @OneToMany (mappedBy="movieEntity")
     private List<ScreeningSchedule> screeningSchedules;
-
+    
     public MovieEntity() {
         this.enabled = true;
     }
 
     
-    public MovieEntity(String title, String genre, String cast, String director, String runningTime, String language, String sypnosis, String ratings) {
+    public MovieEntity(String title, String genre, String cast, String director, Integer runningTime, String language, String sypnosis, String ratings, String imagePath) {
         this.title = title;
         this.genre = genre;
         this.cast = cast;
@@ -50,6 +56,7 @@ public class MovieEntity implements Serializable {
         this.language = language;
         this.sypnosis = sypnosis;
         this.ratings = ratings;
+        this.imagePath = imagePath;
     }
 
     public String getTitle() {
@@ -84,11 +91,11 @@ public class MovieEntity implements Serializable {
         this.director = director;
     }
 
-    public String getRunningTime() {
+    public Integer getRunningTime() {
         return runningTime;
     }
 
-    public void setRunningTime(String runningTime) {
+    public void setRunningTime(Integer runningTime) {
         this.runningTime = runningTime;
     }
 
@@ -163,6 +170,20 @@ public class MovieEntity implements Serializable {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    /**
+     * @return the imagePath
+     */
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    /**
+     * @param imagePath the imagePath to set
+     */
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
     
 }

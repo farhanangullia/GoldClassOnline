@@ -6,9 +6,11 @@
 package ejb.session.stateless;
 
 import entity.ScreeningSchedule;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -24,18 +26,42 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
         em.persist(object);
     }
 
-    
     @Override
-    public ScreeningSchedule createScreeningSchedule (ScreeningSchedule screeningSchedule) {
+    public ScreeningSchedule createScreeningSchedule(ScreeningSchedule screeningSchedule) {
         em.persist(screeningSchedule);
         em.flush();
         em.refresh(screeningSchedule);
-        
-        return screeningSchedule;       
+
+        return screeningSchedule;
     }
-    
+
     @Override
-    public void updateScreeningSchedule (ScreeningSchedule screeningSchedule) {
+    public void updateScreeningSchedule(ScreeningSchedule screeningSchedule) {
         em.merge(screeningSchedule);
     }
+
+    @Override
+    public List<ScreeningSchedule> retrieveAllScreeningSchedules() {
+        Query query = em.createQuery("SELECT s FROM ScreeningSchedule s");
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<ScreeningSchedule> retrieveAllScreeningSchedulesByHall(Long hallId) {
+        Query query = em.createQuery("SELECT s FROM ScreeningSchedule s WHERE s.hallEntity.id = :inHallId");
+        query.setParameter("inHallId", hallId);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<ScreeningSchedule> retrieveAllScreeningSchedulesByHallAndMovie(Long hallId, Long movieId) {
+        Query query = em.createQuery("SELECT s FROM ScreeningSchedule s WHERE s.hallEntity.id = :inHallId AND s.movieEntity.id=:inMovieId");
+        query.setParameter("inHallId", hallId);
+        query.setParameter("inMovieId", movieId);
+
+        return query.getResultList();
+    }
+
 }

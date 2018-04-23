@@ -7,7 +7,9 @@ package entity;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,11 +26,15 @@ public class CinemaEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(length = 32, unique = true, nullable = false)
     private String name;
+    @Column(length = 50)
     private String address;
+    @Column(length = 6)
     private String postalCode;
+    @Column
     private Boolean enabled;
-    @OneToMany (mappedBy="cinemaEntity")
+    @OneToMany(mappedBy = "cinemaEntity", fetch = FetchType.EAGER)
     private List<HallEntity> halls;
 
     public CinemaEntity() {
@@ -36,6 +42,7 @@ public class CinemaEntity implements Serializable {
     }
 
     public CinemaEntity(String name, String address, String postalCode) {
+        this();
         this.name = name;
         this.address = address;
         this.postalCode = postalCode;
@@ -64,8 +71,6 @@ public class CinemaEntity implements Serializable {
     public void setAddress(String address) {
         this.address = address;
     }
-    
-    
 
     public Long getId() {
         return id;

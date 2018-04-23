@@ -6,8 +6,11 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,16 +32,22 @@ public class HallEntity implements Serializable {
     private Integer row;
     private Integer col;
     private Boolean enabled;
-    @ManyToOne
+
+    private List<Date> calendarScreeningDays;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     private CinemaEntity cinemaEntity;
-    @OneToMany (mappedBy="hallEntity")
+    @OneToMany(mappedBy = "hallEntity", fetch = FetchType.EAGER)
     private List<ScreeningSchedule> screeningSchedules;
 
-     public HallEntity() {
-             this.enabled = true;
+    public HallEntity() {
+        this.enabled = true;
+        this.screeningSchedules = new ArrayList<>();
+        this.calendarScreeningDays = new ArrayList<>();
     }
 
     public HallEntity(String name, Integer row, Integer col) {
+        this();
         this.name = name;
         this.row = row;
         this.col = col;
@@ -124,5 +133,19 @@ public class HallEntity implements Serializable {
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
-    
+
+    /**
+     * @return the calendarScreeningDays
+     */
+    public List<Date> getCalendarScreeningDays() {
+        return calendarScreeningDays;
+    }
+
+    /**
+     * @param calendarScreeningDays the calendarScreeningDays to set
+     */
+    public void setCalendarScreeningDays(List<Date> calendarScreeningDays) {
+        this.calendarScreeningDays = calendarScreeningDays;
+    }
+
 }

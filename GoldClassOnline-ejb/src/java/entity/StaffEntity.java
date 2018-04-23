@@ -27,7 +27,9 @@ public class StaffEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(length = 32, nullable = false)
     private String firstName;
+    @Column(length = 32, nullable = false)
     private String lastName;
     @Enumerated(EnumType.STRING)
     private AccessRightEnum accessRightEnum;

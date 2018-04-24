@@ -6,6 +6,7 @@
 package jsf.managedbean;
 
 import ejb.session.stateless.StaffEntityControllerLocal;
+import entity.CinemaEntity;
 import entity.StaffEntity;
 import java.io.IOException;
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
+import util.enumeration.AccessRightEnum;
 import util.exception.InvalidLoginCredentialException;
 
 /**
@@ -28,38 +30,43 @@ public class IndexManagedBean {
 
     @EJB
     private StaffEntityControllerLocal staffEntityControllerLocal;
-    
+
     private String username;
     private String password;
 
-    
     public IndexManagedBean() {
     }
-    
-    public void login() throws IOException
-    {
-        try
-        {
-            StaffEntity currentStaffEntity = staffEntityControllerLocal.staffLogin(username, password);FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+
+    public void login() throws IOException {
+        try {
+            StaffEntity currentStaffEntity = staffEntityControllerLocal.staffLogin(username, password);
+            FacesContext.getCurrentInstance().getExternalContext().getSession(true);
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("isLogin", true);
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("currentStaffEntity", currentStaffEntity);
-            FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");            
-        }
-        catch(InvalidLoginCredentialException ex)
-        {
+
+             String accountType;
+            if (currentStaffEntity.getAccessRightEnum().equals(AccessRightEnum.CINEMASTAFF)) {
+                accountType = "cinemaStaff";
+                Long cinemaEntityId = currentStaffEntity.getCinemaEntity().getId();
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("currentStaffEntity", currentStaffEntity);
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("selectedCinemaEntityId", (Long) cinemaEntityId);
+            } else {
+                accountType = "admin";
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("currentStaffEntity", currentStaffEntity);
+            }
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("accountType", accountType);
+            FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+        } catch (InvalidLoginCredentialException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid login credential: " + ex.getMessage(), null));
         }
     }
-    
-    public void clear()
-    {
+
+    public void clear() {
         username = "";
         password = "";
     }
-    
-     public void logout(ActionEvent event) throws IOException
-    {
-        ((HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(true)).invalidate();
+
+    public void logout(ActionEvent event) throws IOException {
+        ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true)).invalidate();
         FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
     }
 
@@ -77,5 +84,5 @@ public class IndexManagedBean {
 
     public void setPassword(String password) {
         this.password = password;
-    }     
+    }
 }

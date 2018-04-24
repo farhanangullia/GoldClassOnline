@@ -37,7 +37,7 @@
                         </p:submenu>
                         
                         
-                        <p:submenu label="System Administration">
+                        <p:submenu rendered="#{sessionScope['accountType'] eq 'admin'}" label="System Administration">
                             <p:menuitem value="Cinema Management" outcome="cinemaManagement.xhtml" icon="ui-icon-person" />                 
                             <p:menuitem value="Movie Management" outcome="movieManagement.xhtml" icon="ui-icon-search" />
                             

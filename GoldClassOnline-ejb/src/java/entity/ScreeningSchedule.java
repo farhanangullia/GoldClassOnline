@@ -124,16 +124,10 @@ public class ScreeningSchedule implements Serializable {
         this.enabled = enabled;
     }
 
-    /**
-     * @return the screeningEndTime
-     */
     public Date getScreeningEndTime() {
         return screeningEndTime;
     }
 
-    /**
-     * @param screeningEndTime the screeningEndTime to set
-     */
     public void setScreeningEndTime(Date screeningEndTime) {
         this.screeningEndTime = screeningEndTime;
     }

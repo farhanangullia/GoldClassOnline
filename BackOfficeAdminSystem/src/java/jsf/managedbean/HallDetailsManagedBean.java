@@ -72,7 +72,6 @@ public class HallDetailsManagedBean implements Serializable {
     public void postConstruct()
     {
         hallEntityToViewId = (Long)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("hallIdToView");
-        System.err.println("Hall ID: " + hallEntityToViewId);
         hallEntityToView = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
         screeningSchedules = screeningScheduleControllerLocal.retrieveAllScreeningSchedules(hallEntityToViewId);
         filteredScreeningSchedules = screeningSchedules;

@@ -17,6 +17,7 @@ import entity.HallEntity;
 import entity.MovieEntity;
 import entity.ScreeningSchedule;
 import entity.StaffEntity;
+import java.util.Calendar;
 import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -71,14 +72,20 @@ public class DataInitializationSessionBean {
 
             StaffEntity admin = staffEntityControllerLocal.createStaffEntity(new StaffEntity("Admin", "Manager", AccessRightEnum.ADMIN, "manager", "password"));
             StaffEntity cinemaStaff = staffEntityControllerLocal.createStaffEntity(new StaffEntity("Cinema", "Staff", AccessRightEnum.CINEMASTAFF, "cinemastaff", "password"));
-
-            MovieEntity movieEntity = movieEntityControllerLocal.createMovieEntity(new MovieEntity("Avengers", "Action", "Robert Downey Jr, Chris Evans, Black Panther, Scarlett Johansson", "Russo Brother", 180, "English", "Avengers assemble to save Earth!", "PG13", "../assets/img/avengers.jpg"));
+            StaffEntity cinemaStaff2 = staffEntityControllerLocal.createStaffEntity(new StaffEntity("Cinema", "Staff", AccessRightEnum.CINEMASTAFF, "staff", "password"));
+            
+            MovieEntity movieEntity = movieEntityControllerLocal.createMovieEntity(new MovieEntity("Avengers", "Action", "Robert Downey Jr, Chris Evans, Black Panther, Scarlett Johansson", "Russo Brother", 180 , "English", "Avengers assemble to save Earth!", "PG13","../assets/img/avengers.jpg"));
             movieEntity.setEnabled(Boolean.TRUE);
             MovieEntity movieEntity2 = movieEntityControllerLocal.createMovieEntity(new MovieEntity("Frozen", "Cartoon", "Elsa, Anna", "Kanye West", 120, "English", "Let it go, let it go!", "PG", "../assets/img/frozen.jpg"));
             movieEntity2.setEnabled(Boolean.TRUE);
 
             CinemaEntity cinemaEntity = cinemaEntityControllerLocal.createCinemaEntity(new CinemaEntity("Star Movie", "Kent Ridge Drive", "123456"));
             cinemaEntity.setEnabled(Boolean.TRUE);
+            CinemaEntity cinemaEntity2 = cinemaEntityControllerLocal.createCinemaEntity(new CinemaEntity("Best Movie", "313 Orchard", "111313"));
+            cinemaStaff.setCinemaEntity(cinemaEntity);
+            cinemaEntity.getStaffEntities().add(cinemaStaff);
+            cinemaStaff2.setCinemaEntity(cinemaEntity2);
+            cinemaEntity2.getStaffEntities().add(cinemaStaff2);
 
             HallEntity hallEntity = hallEntityControllerLocal.createHallEntity(new HallEntity("Premium", 5, 6), cinemaEntity.getId());
             hallEntity.setEnabled(Boolean.TRUE);
@@ -89,11 +96,16 @@ public class DataInitializationSessionBean {
                 }
             }
             hallEntity.setSeating(seating);
-
-            Date calendarStart = new Date(2018, 5, 12, 14, 0);
-
+            
+            Date calendarStart = new Date(118, 5, 12, 14, 0);
+               
             ScreeningSchedule screeningSchedule = screeningScheduleControllerLocal.createScreeningSchedule(new ScreeningSchedule(calendarStart), movieEntity, hallEntity.getId());
             screeningSchedule.setEnabled(Boolean.TRUE);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(screeningSchedule.getScreeningTime());
+            calendar.add(Calendar.MINUTE, movieEntity.getRunningTime());       
+            Date endTime = calendar.getTime();
+            screeningSchedule.setScreeningEndTime(endTime);
 
             customerEntityControllerLocal.createCustomerEntity(new CustomerEntity("Johnnie", "Walker", "25", "default", "password"));
 

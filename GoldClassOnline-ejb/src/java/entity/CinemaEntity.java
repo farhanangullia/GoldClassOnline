@@ -36,6 +36,8 @@ public class CinemaEntity implements Serializable {
     private Boolean enabled;
     @OneToMany(mappedBy = "cinemaEntity", fetch = FetchType.EAGER)
     private List<HallEntity> halls;
+    @OneToMany(mappedBy = "cinemaEntity", fetch = FetchType.EAGER)
+    private List<StaffEntity> staffEntities;
 
     public CinemaEntity() {
         this.enabled = true;
@@ -119,5 +121,13 @@ public class CinemaEntity implements Serializable {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public List<StaffEntity> getStaffEntities() {
+        return staffEntities;
+    }
+
+    public void setStaffEntities(List<StaffEntity> staffEntities) {
+        this.staffEntities = staffEntities;
     }
 }

@@ -43,7 +43,7 @@ public class SecurityFilter implements Filter {
             if (currentStaffEntity.getAccessRightEnum().equals(AccessRightEnum.ADMIN)) {
                 httpServletResponse.sendRedirect(CONTEXT_ROOT + "/adminMainPage.xhtml");
             } else if (currentStaffEntity.getAccessRightEnum().equals(AccessRightEnum.CINEMASTAFF)) {
-                httpServletResponse.sendRedirect(CONTEXT_ROOT + "/cinemaManagement.xhtml");
+                httpServletResponse.sendRedirect(CONTEXT_ROOT + "/staffMainPage.xhtml");
             }
         }
 
@@ -81,11 +81,10 @@ public class SecurityFilter implements Filter {
                 return false;
             }
         } else if (accessRight.equals(AccessRightEnum.CINEMASTAFF)) {
-            if (path.equals("/cinemaManagement.xhtml")
-                    || path.equals("/movieManagement.xhtml")
-                    || path.equals("/viewCinemaDetails.xhtml")
+            if (path.equals("/viewCinemaDetails.xhtml")
                     || path.equals("/viewHallDetails.xhtml")
-                    || path.equals("/screeningSchedule.xhtml")) {
+                    || path.equals("/screeningSchedule.xhtml")
+                    || path.equals("/staffMainPage.xhtml")) {
                 return true;
             } else {
                 return false;

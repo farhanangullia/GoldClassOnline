@@ -9,12 +9,17 @@
 
     <ui:define name="content">
 
-        <p:breadCrumb>
+        <p:breadCrumb rendered="#{sessionScope['accountType'] eq 'admin'}">
             <p:menuitem value="Home" url="adminMainPage.xhtml" />
             <p:menuitem value="Cinema Management" url="cinemaManagement.xhtml" />
             <p:menuitem value="Cinema Details" url="viewCinemaDetails.xhtml" />
             <p:menuitem value="Hall Details" url="viewHallDetails.xhtml" />
         </p:breadCrumb>   
+        
+        <p:breadCrumb rendered="#{sessionScope['accountType'] eq 'cinemaStaff'}">
+            <p:menuitem value="Cinema Details" url="staffMainPage.xhtml" />
+            <p:menuitem value="Hall Details" url="viewHallDetails.xhtml" />
+        </p:breadCrumb>
 
         <h3 align="center">#{hallDetailsManagedBean.hallEntityToView.name}</h3>
 
@@ -32,7 +37,7 @@
 
         <h:form>
             <p:menubar>
-                <p:submenu label="Create New Screening Schedule" icon="ui-icon-document">
+                <p:submenu label="Add New Screening Schedule" icon="ui-icon-document">
                     <p:menuitem value="Screening Schedule" onclick="PF('dialogCreateNewSS').show()" icon="ui-icon-plusthick" />
                 </p:submenu>
             </p:menubar>

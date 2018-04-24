@@ -8,6 +8,8 @@ package ejb.session.stateless;
 import entity.HallEntity;
 import entity.MovieEntity;
 import entity.ScreeningSchedule;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -39,6 +41,14 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
         hallEntity.getScreeningSchedules().add(screeningSchedule);
         screeningSchedule.setMovieEntity(movieEntity);
         movieEntity.getScreeningSchedules().add(screeningSchedule);
+        
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(screeningSchedule.getScreeningTime());
+        calendar.add(Calendar.MINUTE, movieEntity.getRunningTime());
+        
+        Date endTime = calendar.getTime();
+        screeningSchedule.setScreeningEndTime(endTime);
+ 
         em.persist(screeningSchedule);
         em.flush();
         em.refresh(screeningSchedule);
@@ -53,6 +63,11 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
         ss.setScreeningTime(screeningSchedule.getScreeningTime());
         ss.setMovieEntity(movieEntity);
         movieEntity.getScreeningSchedules().add(ss);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(ss.getScreeningTime());
+        calendar.add(Calendar.MINUTE, movieEntity.getRunningTime());
+        Date endTime = calendar.getTime();
+        ss.setScreeningEndTime(endTime);
  
     }
 

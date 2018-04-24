@@ -6,6 +6,8 @@
 package ejb.session.stateless;
 
 import entity.MovieEntity;
+import entity.ScreeningSchedule;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -22,18 +24,18 @@ public class MovieEntityController implements MovieEntityControllerLocal {
 
     @PersistenceContext(unitName = "GoldClassOnline-ejbPU")
     private EntityManager em;
-    
+
     @Override
     public MovieEntity createMovieEntity(MovieEntity movieEntity) {
         em.persist(movieEntity);
         em.flush();
         em.refresh(movieEntity);
-        
+
         return movieEntity;
     }
-    
+
     @Override
-    public void updateMovieEntity(MovieEntity movieEntity)  {
+    public void updateMovieEntity(MovieEntity movieEntity) {
         MovieEntity me = retrieveMovieByMovieId(movieEntity.getId());
         me.setCast(movieEntity.getCast());
         me.setDirector(movieEntity.getDirector());
@@ -44,26 +46,44 @@ public class MovieEntityController implements MovieEntityControllerLocal {
         me.setSypnosis(movieEntity.getSypnosis());
         me.setTitle(movieEntity.getTitle());
     }
-    
+
     @Override
-    public MovieEntity retrieveMovieByMovieId(Long movieId) 
-    {
+    public MovieEntity retrieveMovieByMovieId(Long movieId) {
         MovieEntity movieEntity = em.find(MovieEntity.class, movieId);
 
-            return movieEntity;
-                  
+        return movieEntity;
+
     }
-    
+
     @Override
     public List<MovieEntity> retrieveAllMovieEntities() {
         Query query = em.createQuery("SELECT m FROM MovieEntity m WHERE m.enabled = 1");
-        
+
         return query.getResultList();
     }
-    
+
     @Override
-    public void deleteMovie(Long movieId) throws MovieNotFoundException
-    {
+    public List<MovieEntity> retrieveAllMovieEntitiesByCinema(Long cinemaId) { //how
+        Query query = em.createQuery("SELECT m FROM MovieEntity m WHERE m.enabled= 1");
+        List<MovieEntity> allMovies = query.getResultList();
+        List<MovieEntity> moviesInCinema = new ArrayList<>();
+        for (MovieEntity movieEntity : allMovies) {
+            for (ScreeningSchedule screeningSchedule : movieEntity.getScreeningSchedules()) {
+                if (screeningSchedule.getHallEntity().getCinemaEntity().getId().equals(cinemaId)) {
+
+                    moviesInCinema.add(movieEntity);
+                    break;
+                }
+
+            }
+        }
+
+        return moviesInCinema;
+
+    }
+
+    @Override
+    public void deleteMovie(Long movieId) throws MovieNotFoundException {
         if (movieId != null) {
             MovieEntity movieEntutyToRemove = retrieveMovieByMovieId(movieId);
             movieEntutyToRemove.setEnabled(Boolean.FALSE);

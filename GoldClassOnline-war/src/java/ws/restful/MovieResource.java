@@ -61,6 +61,7 @@ public class MovieResource {
                     screeningSchedule.getHallEntity().getCinemaEntity().getHalls().clear();
                     screeningSchedule.getTicketEntities().clear();
                     screeningSchedule.setMovieEntity(null);
+                    screeningSchedule.getHallEntity().getCinemaEntity().getStaffEntities().clear();
 
                 }
 
@@ -76,8 +77,7 @@ public class MovieResource {
         }
     }
 
-   
-      @Path("retrieveAllMoviesByCinema/{cinemaId}")
+    @Path("retrieveAllMoviesByCinema/{cinemaId}")
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
@@ -86,34 +86,31 @@ public class MovieResource {
 
             List<MovieEntity> movieEntities = movieEntityControllerLocal.retrieveAllMovieEntitiesByCinema(cinemaId);
 
-           for(MovieEntity movieEntity: movieEntities){
-               
-            for (ScreeningSchedule screeningSchedule : movieEntity.getScreeningSchedules()) {
+            for (MovieEntity movieEntity : movieEntities) {
+
+                for (ScreeningSchedule screeningSchedule : movieEntity.getScreeningSchedules()) {
 
                     screeningSchedule.getHallEntity().getScreeningSchedules().clear();
                     screeningSchedule.getHallEntity().getCinemaEntity().getHalls().clear();
                     screeningSchedule.getTicketEntities().clear();
                     screeningSchedule.setMovieEntity(null);
+                    screeningSchedule.getHallEntity().getCinemaEntity().getStaffEntities().clear();
 
                 }
-               
-           }
+
+            }
 
             RetrieveAllMoviesByCinemaRsp retrieveAllMoviesByCinemaRsp = new RetrieveAllMoviesByCinemaRsp(movieEntities);
 
             return Response.status(Response.Status.OK).entity(retrieveAllMoviesByCinemaRsp).build();
 
-        }  catch (Exception ex) {
+        } catch (Exception ex) {
             ErrorRsp errorRsp = new ErrorRsp(ex.getMessage());
 
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorRsp).build();
         }
     }
-    
-    
-    
-    
-  
+
     private MovieEntityControllerLocal lookupMovieEntityControllerLocal() {
         try {
             javax.naming.Context c = new InitialContext();

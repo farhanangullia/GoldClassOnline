@@ -54,6 +54,7 @@ public class CinemaResource {
 
             for (CinemaEntity cinemaEntity : cinemaEntities) {
                 cinemaEntity.getHalls().clear();
+                cinemaEntity.getStaffEntities().clear();
 
             }
 

@@ -33,7 +33,7 @@ public class MovieEntityController implements MovieEntityControllerLocal {
     }
     
     @Override
-    public void updateMovieEntity(MovieEntity movieEntity) {
+    public void updateMovieEntity(MovieEntity movieEntity)  {
         MovieEntity me = retrieveMovieByMovieId(movieEntity.getId());
         me.setCast(movieEntity.getCast());
         me.setDirector(movieEntity.getDirector());
@@ -49,7 +49,9 @@ public class MovieEntityController implements MovieEntityControllerLocal {
     public MovieEntity retrieveMovieByMovieId(Long movieId) 
     {
         MovieEntity movieEntity = em.find(MovieEntity.class, movieId);
+
             return movieEntity;
+                  
     }
     
     @Override

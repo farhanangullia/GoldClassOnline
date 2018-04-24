@@ -7,7 +7,6 @@ package entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,19 +30,16 @@ public class HallEntity implements Serializable {
     private String name;
     private Integer row;
     private Integer col;
+    private char [][] seating; 
     private Boolean enabled;
-
-    private List<Date> calendarScreeningDays;
-
     @ManyToOne(fetch = FetchType.EAGER)
     private CinemaEntity cinemaEntity;
-    @OneToMany(mappedBy = "hallEntity", fetch = FetchType.EAGER)
+    @OneToMany (mappedBy="hallEntity", fetch = FetchType.EAGER)
     private List<ScreeningSchedule> screeningSchedules;
 
-    public HallEntity() {
-        this.enabled = true;
-        this.screeningSchedules = new ArrayList<>();
-        this.calendarScreeningDays = new ArrayList<>();
+     public HallEntity() {
+         this.enabled = true;
+         screeningSchedules = new ArrayList<>();
     }
 
     public HallEntity(String name, Integer row, Integer col) {
@@ -134,18 +130,11 @@ public class HallEntity implements Serializable {
         this.enabled = enabled;
     }
 
-    /**
-     * @return the calendarScreeningDays
-     */
-    public List<Date> getCalendarScreeningDays() {
-        return calendarScreeningDays;
+    public char[][] getSeating() {
+        return seating;
     }
 
-    /**
-     * @param calendarScreeningDays the calendarScreeningDays to set
-     */
-    public void setCalendarScreeningDays(List<Date> calendarScreeningDays) {
-        this.calendarScreeningDays = calendarScreeningDays;
+    public void setSeating(char[][] seating) {
+        this.seating = seating;
     }
-
 }

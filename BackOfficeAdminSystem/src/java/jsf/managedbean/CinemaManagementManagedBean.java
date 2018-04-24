@@ -42,6 +42,7 @@ public class CinemaManagementManagedBean implements Serializable {
     private CinemaEntity newCinemaEntity;
     private CinemaEntity selectedCinemaEntityToView;
     private CinemaEntity selectedCinemaEntityToUpdate;
+    //private Long cinemaEntityToViewId;
     
 
     /**

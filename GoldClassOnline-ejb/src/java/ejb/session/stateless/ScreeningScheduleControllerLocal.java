@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.MovieEntity;
 import entity.ScreeningSchedule;
 import java.util.List;
 import javax.ejb.Local;
@@ -16,14 +17,14 @@ import javax.ejb.Local;
 @Local
 public interface ScreeningScheduleControllerLocal {
 
-    public ScreeningSchedule createScreeningSchedule(ScreeningSchedule screeningSchedule);
+    public List<ScreeningSchedule> retrieveAllScreeningSchedules(Long hallId);
 
-    public void updateScreeningSchedule(ScreeningSchedule screeningSchedule);
+    public ScreeningSchedule retrieveScreeningScheduleById(Long ssId);
 
-    public List<ScreeningSchedule> retrieveAllScreeningSchedulesByHallAndMovie(Long hallId, Long movieId);
+    public void deleteScreeningSchedule(Long hallId);
 
-    public List<ScreeningSchedule> retrieveAllScreeningSchedulesByHall(Long hallId);
+    public ScreeningSchedule createScreeningSchedule(ScreeningSchedule screeningSchedule, MovieEntity movieEntity, Long hallEntityID);
 
-    public List<ScreeningSchedule> retrieveAllScreeningSchedules();
+    public void updateScreeningSchedule(ScreeningSchedule screeningSchedule, MovieEntity movieEntity, Long hallEntityID);
     
 }

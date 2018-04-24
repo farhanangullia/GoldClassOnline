@@ -6,9 +6,9 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -31,9 +31,10 @@ public class ScreeningSchedule implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date screeningDateTime;
-    @Column
-    private boolean available;
+    private Date screeningTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date screeningEndTime;
+    private Boolean enabled;
     @ManyToOne(fetch = FetchType.EAGER)
     private HallEntity hallEntity;
     @ManyToOne(fetch = FetchType.EAGER)
@@ -42,21 +43,20 @@ public class ScreeningSchedule implements Serializable {
     private List<TicketEntity> ticketEntities;
 
     public ScreeningSchedule() {
+        this.enabled = true;
+        ticketEntities = new ArrayList<>();
     }
 
-    public ScreeningSchedule(Date screeningTime, boolean available, HallEntity hallEntity, MovieEntity movieEntity) {
-        this.screeningDateTime = screeningTime;
-        this.available = available;
-        this.hallEntity = hallEntity;
-        this.movieEntity = movieEntity;
+    public ScreeningSchedule(Date screeningTime) {
+        this.screeningTime = screeningTime;
     }
 
     public Date getScreeningTime() {
-        return screeningDateTime;
+        return screeningTime;
     }
 
-    public void setScreeningTime(Date screeningDateTime) {
-        this.screeningDateTime = screeningDateTime;
+    public void setScreeningTime(Date screeningTime) {
+        this.screeningTime = screeningTime;
     }
 
     public Long getId() {
@@ -116,18 +116,26 @@ public class ScreeningSchedule implements Serializable {
         this.ticketEntities = ticketEntities;
     }
 
-    /**
-     * @return the available
-     */
-    public boolean isAvailable() {
-        return available;
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     /**
-     * @param available the available to set
+     * @return the screeningEndTime
      */
-    public void setAvailable(boolean available) {
-        this.available = available;
+    public Date getScreeningEndTime() {
+        return screeningEndTime;
+    }
+
+    /**
+     * @param screeningEndTime the screeningEndTime to set
+     */
+    public void setScreeningEndTime(Date screeningEndTime) {
+        this.screeningEndTime = screeningEndTime;
     }
 
 }

@@ -20,6 +20,10 @@ public class TicketEntityController implements TicketEntityControllerLocal {
     @PersistenceContext(unitName = "GoldClassOnline-ejbPU")
     private EntityManager em;
 
+    public void persist(Object object) {
+        em.persist(object);
+    }
+
     @Override
     public TicketEntity createTicketEntity (TicketEntity ticketEntity) {
         em.persist(ticketEntity);

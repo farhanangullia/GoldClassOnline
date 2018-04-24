@@ -10,6 +10,11 @@
     <div class ="ui-g-12 ui-md-6 ui-lg-4">
         <ui:define name="content">
             
+          <p:breadCrumb>
+            <p:menuitem value="Home" url="adminMainPage.xhtml" />
+            <p:menuitem value="Movie Management" url="movieManagement.xhtml" />
+        </p:breadCrumb> 
+            
         <h3>System Administration :: Movie Management</h3>
         <br/>
         
@@ -52,13 +57,9 @@
                 <p:column headerText="Genre" sortBy="#{movieEntity.genre}" filterBy="#{movieEntity.genre}" filterMatchMode="contains">
                     <h:outputText value="#{movieEntity.genre}" />
                 </p:column>
-                               
-<!--                <p:column headerText="Director" sortBy="#{movieEntity.director}" filterBy="#{movieEntity.director}" filterMatchMode="contains">
-                    <h:outputText value="#{movieEntity.director}">
-                    </h:outputText>
-                </p:column>-->
+                              
                 
-                <p:column headerText="Run Time" sortBy="#{movieEntity.runningTime}" filterBy="#{movieEntity.director}" filterMatchMode="contains">
+                <p:column headerText="Minutes" sortBy="#{movieEntity.runningTime}" filterBy="#{movieEntity.director}" filterMatchMode="contains">
                     <h:outputText value="#{movieEntity.runningTime}">
                     </h:outputText>
                 </p:column>
@@ -78,7 +79,7 @@
                         <f:setPropertyActionListener value="#{movieEntity}" target="#{movieManagementManagedBean.selectedMovieEntityToView}" />
                     </p:commandButton>
                     <p:commandButton update="formUpdateMovie" oncomplete="PF('dialogUpdateMovie').show()" icon="ui-icon-pencil" title="Update">
-                        <f:setPropertyActionListener value="#{cinemaEntity}" target="#{movieManagementManagedBean.selectedMovieEntityToUpdate}" />
+                        <f:setPropertyActionListener value="#{movieEntity}" target="#{movieManagementManagedBean.selectedMovieEntityToUpdate}" />
                     </p:commandButton>
                     <p:commandButton icon="ui-icon-trash" actionListener="#{movieManagementManagedBean.deleteMovie}" update="formAllMovies:dataTableAllMovies formAllMovies:messages">
                         <f:attribute name="movieEntityToDelete" value="#{movieEntity}" />
@@ -305,8 +306,7 @@
                 <p:messages id="messagesUpdateMovie" redisplay="false" />
                 
                 <p:panelGrid>
-                    
-   
+
                     <p:row>
                         <p:column>
                             <p:outputLabel for="title" value="Title: " />
@@ -383,7 +383,7 @@
                             <p:outputLabel for="ratings" value="Ratings: " />
                        </p:column>
                         <p:column>
-                        <p:selectOneMenu id="ratings" value="#{movieManagementManagedBean.newMovieEntity.ratings}" style="width:125px">
+                        <p:selectOneMenu id="ratings" value="#{movieManagementManagedBean.selectedMovieEntityToUpdate.ratings}" style="width:125px" required="true" requiredMessage="Ratings is required">
                                 <f:selectItem itemLabel="Select One" itemValue="" />
                                 <f:selectItem itemLabel="G" itemValue="G" />
                                 <f:selectItem itemLabel="PG" itemValue="PG" />

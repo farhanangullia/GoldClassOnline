@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,7 +40,7 @@ public class MovieEntity implements Serializable {
     private Boolean enabled;
     @Column
     private String imagePath;
-    @OneToMany (mappedBy="movieEntity")
+    @OneToMany (mappedBy="movieEntity", fetch = FetchType.EAGER)
     private List<ScreeningSchedule> screeningSchedules;
     
     public MovieEntity() {

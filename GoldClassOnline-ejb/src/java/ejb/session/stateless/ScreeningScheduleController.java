@@ -5,8 +5,11 @@
  */
 package ejb.session.stateless;
 
+import entity.HallEntity;
+import entity.MovieEntity;
 import entity.ScreeningSchedule;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,6 +22,9 @@ import javax.persistence.Query;
 @Stateless
 public class ScreeningScheduleController implements ScreeningScheduleControllerLocal {
 
+    @EJB
+    private HallEntityControllerLocal hallEntityControllerLocal;
+
     @PersistenceContext(unitName = "GoldClassOnline-ejbPU")
     private EntityManager em;
 
@@ -27,7 +33,12 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
     }
 
     @Override
-    public ScreeningSchedule createScreeningSchedule(ScreeningSchedule screeningSchedule) {
+    public ScreeningSchedule createScreeningSchedule(ScreeningSchedule screeningSchedule, MovieEntity movieEntity,Long hallEntityID) {
+        HallEntity hallEntity = hallEntityControllerLocal.retrieveHallByHallId(hallEntityID);
+        screeningSchedule.setHallEntity(hallEntity);
+        hallEntity.getScreeningSchedules().add(screeningSchedule);
+        screeningSchedule.setMovieEntity(movieEntity);
+        movieEntity.getScreeningSchedules().add(screeningSchedule);
         em.persist(screeningSchedule);
         em.flush();
         em.refresh(screeningSchedule);
@@ -36,32 +47,33 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
     }
 
     @Override
-    public void updateScreeningSchedule(ScreeningSchedule screeningSchedule) {
-        em.merge(screeningSchedule);
+    public void updateScreeningSchedule(ScreeningSchedule screeningSchedule, MovieEntity movieEntity,Long hallEntityID) {
+        
+        ScreeningSchedule ss = em.find(ScreeningSchedule.class, screeningSchedule.getId());
+        ss.setScreeningTime(screeningSchedule.getScreeningTime());
+        ss.setMovieEntity(movieEntity);
+        movieEntity.getScreeningSchedules().add(ss);
+ 
     }
 
     @Override
-    public List<ScreeningSchedule> retrieveAllScreeningSchedules() {
-        Query query = em.createQuery("SELECT s FROM ScreeningSchedule s");
-
-        return query.getResultList();
-    }
-
-    @Override
-    public List<ScreeningSchedule> retrieveAllScreeningSchedulesByHall(Long hallId) {
-        Query query = em.createQuery("SELECT s FROM ScreeningSchedule s WHERE s.hallEntity.id = :inHallId");
+    public List<ScreeningSchedule> retrieveAllScreeningSchedules(Long hallId) {
+        Query query = em.createQuery("SELECT s FROM ScreeningSchedule s WHERE s.hallEntity.id = :inHallId AND s.enabled=1");
         query.setParameter("inHallId", hallId);
 
         return query.getResultList();
     }
 
     @Override
-    public List<ScreeningSchedule> retrieveAllScreeningSchedulesByHallAndMovie(Long hallId, Long movieId) {
-        Query query = em.createQuery("SELECT s FROM ScreeningSchedule s WHERE s.hallEntity.id = :inHallId AND s.movieEntity.id=:inMovieId");
-        query.setParameter("inHallId", hallId);
-        query.setParameter("inMovieId", movieId);
+    public ScreeningSchedule retrieveScreeningScheduleById(Long ssId) {
+        ScreeningSchedule ssEntity = em.find(ScreeningSchedule.class, ssId);
 
-        return query.getResultList();
+        return ssEntity;
     }
 
+    @Override
+    public void deleteScreeningSchedule(Long hallId) {
+        ScreeningSchedule ssEntityToRemove = retrieveScreeningScheduleById(hallId);
+        ssEntityToRemove.setEnabled(Boolean.FALSE);
+    }
 }

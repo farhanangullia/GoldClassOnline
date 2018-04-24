@@ -90,6 +90,10 @@ public class HallManagementManagedBean implements Serializable {
         {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while deleting hall: " + ex.getMessage(), null));
         }
+        catch(Exception ex)
+        {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
+        }
     }
      
      public void updateHall(ActionEvent event) {
@@ -152,5 +156,7 @@ public class HallManagementManagedBean implements Serializable {
     public void setSelectedHallEntityToUpDate(HallEntity selectedHallEntityToUpDate) {
         this.selectedHallEntityToUpDate = selectedHallEntityToUpDate;
     }
+
  
+    
 }

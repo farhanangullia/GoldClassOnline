@@ -27,9 +27,5 @@ public interface HallEntityControllerLocal {
     public void deleteHall(Long hallId) throws HallNotFoundException;
 
     public HallEntity retrieveHallByHallId(Long hallId);
-
-    public List<HallEntity> retrieveAllHallsFromAllCinemas();
-
-    public List<String> retrieveAllCalendarDaysByHall(Long hallId);
     
 }

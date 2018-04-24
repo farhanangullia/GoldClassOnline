@@ -26,6 +26,10 @@ public class StaffEntityController implements StaffEntityControllerLocal {
     @PersistenceContext(unitName = "GoldClassOnline-ejbPU")
     private EntityManager em;
 
+    public void persist(Object object) {
+        em.persist(object);
+    }
+
     @Override
     public StaffEntity createStaffEntity (StaffEntity staffEntity) {
         em.persist(staffEntity);

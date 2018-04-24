@@ -15,17 +15,12 @@ import entity.HallEntity;
 import entity.MovieEntity;
 import entity.ScreeningSchedule;
 import entity.StaffEntity;
-import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.LocalBean;
 import javax.ejb.Startup;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import util.enumeration.AccessRightEnum;
 import util.exception.StaffNotFoundException;
 
@@ -39,6 +34,9 @@ import util.exception.StaffNotFoundException;
 public class DataInitializationSessionBean {
 
     @EJB
+    private ScreeningScheduleControllerLocal screeningScheduleControllerLocal;
+
+    @EJB
     private HallEntityControllerLocal hallEntityControllerLocal;
 
     @EJB
@@ -49,12 +47,6 @@ public class DataInitializationSessionBean {
 
     @EJB
     private StaffEntityControllerLocal staffEntityControllerLocal;
-
-    @EJB
-    private ScreeningScheduleControllerLocal screeningScheduleControllerLocal;
-
-    @PersistenceContext(unitName = "GoldClassOnline-ejbPU")
-    private EntityManager em;
 
     public DataInitializationSessionBean() {
     }
@@ -72,36 +64,33 @@ public class DataInitializationSessionBean {
     private void initializeData() {
         try {
 
-            StaffEntity admin = staffEntityControllerLocal.createStaffEntity(new StaffEntity("Admin", "Manager", AccessRightEnum.ADMIN, "admin", "password"));
+            StaffEntity admin = staffEntityControllerLocal.createStaffEntity(new StaffEntity("Admin", "Manager", AccessRightEnum.ADMIN, "manager", "password"));
             StaffEntity cinemaStaff = staffEntityControllerLocal.createStaffEntity(new StaffEntity("Cinema", "Staff", AccessRightEnum.CINEMASTAFF, "cinemastaff", "password"));
 
-            MovieEntity movieEntity = movieEntityControllerLocal.createMovieEntity(new MovieEntity("Avengers", "Action", "Robert Downey Jr, Chris Evans, Black Panther, Scarlett Johansson", "Russo Brother", 180, "English", "Avengers assemble to save Earth!", "PG13", "../assets/img/avengers.jpg"));
+            MovieEntity movieEntity = movieEntityControllerLocal.createMovieEntity(new MovieEntity("Avengers", "Action", "Robert Downey Jr, Chris Evans, Black Panther, Scarlett Johansson", "Russo Brother", 180 , "English", "Avengers assemble to save Earth!", "PG13","../assets/img/avengers.jpg"));
             movieEntity.setEnabled(Boolean.TRUE);
+            MovieEntity movieEntity2 = movieEntityControllerLocal.createMovieEntity(new MovieEntity("Frozen", "Cartoon", "Elsa, Anna", "Kanye West", 120 , "English", "Let it go, let it go!", "PG","../assets/img/frozen.jpg"));
+            movieEntity2.setEnabled(Boolean.TRUE);
 
             CinemaEntity cinemaEntity = cinemaEntityControllerLocal.createCinemaEntity(new CinemaEntity("Star Movie", "Kent Ridge Drive", "123456"));
             cinemaEntity.setEnabled(Boolean.TRUE);
 
-            HallEntity hallEntity = hallEntityControllerLocal.createHallEntity(new HallEntity("Premium Suite", 4, 5), cinemaEntity.getId());
+            HallEntity hallEntity = hallEntityControllerLocal.createHallEntity(new HallEntity("Premium", 5, 6), cinemaEntity.getId());
+            hallEntity.setEnabled(Boolean.TRUE);
+            char[][] seating = new char[hallEntity.getRow()][hallEntity.getCol()];
+            for (int i = 0; i < hallEntity.getRow(); i++) {
+                for (int j = 0; j < hallEntity.getCol(); j++) {
+                    seating[i][j] = 'o';
+                }
+            }
+            hallEntity.setSeating(seating);
+            
+            Date calendarStart = new Date(2018, 5, 12, 14, 0);
+   
+            
+            ScreeningSchedule screeningSchedule = screeningScheduleControllerLocal.createScreeningSchedule(new ScreeningSchedule(calendarStart), movieEntity, hallEntity.getId());
+            screeningSchedule.setEnabled(Boolean.TRUE);
 
-            List<Date> calendarScreeningDays = new ArrayList<>();
-            //  Date screenDay = new Date();
-            Date screenDay = new Date(118, 3, 25);
-
-            calendarScreeningDays.add(screenDay);
-            hallEntity.setCalendarScreeningDays(calendarScreeningDays);
-
-            screenDay.setHours(11);
-            screenDay.setMinutes(30);
-
-            ScreeningSchedule screeningSchedule = screeningScheduleControllerLocal.createScreeningSchedule(new ScreeningSchedule(screenDay, true, hallEntity, movieEntity));
-            hallEntity.getScreeningSchedules().add(screeningSchedule);
-            movieEntity.getScreeningSchedules().add(screeningSchedule);
-            em.merge(hallEntity);
-            em.merge(movieEntity);
-
-            System.out.println(screenDay.toString());
-            DateFormat dateFormatter = DateFormat.getDateInstance();
-            System.out.println(dateFormatter.format(screenDay));
 
         } catch (Exception ex) {
             System.err.println("********** DataInitializationSessionBean.initializeData(): An error has occurred while loading initial test data: " + ex.getMessage());

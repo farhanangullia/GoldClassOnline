@@ -43,7 +43,7 @@ public class SecurityFilter implements Filter {
             if (currentStaffEntity.getAccessRightEnum().equals(AccessRightEnum.ADMIN)) {
                 httpServletResponse.sendRedirect(CONTEXT_ROOT + "/adminMainPage.xhtml");
             } else if (currentStaffEntity.getAccessRightEnum().equals(AccessRightEnum.CINEMASTAFF)) {
-                httpServletResponse.sendRedirect(CONTEXT_ROOT + "/cinemaStaffMainPage.xhtml");
+                httpServletResponse.sendRedirect(CONTEXT_ROOT + "/cinemaManagement.xhtml");
             }
         }
 
@@ -73,14 +73,19 @@ public class SecurityFilter implements Filter {
             if (path.equals("/adminMainPage.xhtml")
                     || path.equals("/cinemaManagement.xhtml")
                     || path.equals("/movieManagement.xhtml")
-                    || path.equals("/hallManagement.xhtml")) {
+                    || path.equals("/viewCinemaDetails.xhtml")
+                    || path.equals("/viewHallDetails.xhtml")
+                    || path.equals("/screeningSchedule.xhtml")) {
                 return true;
             } else {
                 return false;
             }
         } else if (accessRight.equals(AccessRightEnum.CINEMASTAFF)) {
-            if (path.equals("/cinemaStaffMainPage.xhtml")
-                    || path.equals("/screeningScheduleManagement.xhtml")) {
+            if (path.equals("/cinemaManagement.xhtml")
+                    || path.equals("/movieManagement.xhtml")
+                    || path.equals("/viewCinemaDetails.xhtml")
+                    || path.equals("/viewHallDetails.xhtml")
+                    || path.equals("/screeningSchedule.xhtml")) {
                 return true;
             } else {
                 return false;

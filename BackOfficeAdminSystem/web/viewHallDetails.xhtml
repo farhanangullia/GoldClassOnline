@@ -7,7 +7,6 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
-   
     <ui:define name="content">
 
         <p:breadCrumb>
@@ -17,10 +16,163 @@
             <p:menuitem value="Hall Details" url="viewHallDetails.xhtml" />
         </p:breadCrumb>   
 
-        <h3>System Administration :: Cinema Management :: View Cinema Details :: View Hall Details</h3>
-        
-        <h2>To do</h2>
-        
+        <h3 align="center">#{hallDetailsManagedBean.hallEntityToView.name}</h3>
+
+        <div align="center">
+            <h4>Seat Layout:</h4>
+            <p:panelGrid columns="#{hallDetailsManagedBean.hallEntityToView.col}">
+                <c:forEach var="row" items="#{hallDetailsManagedBean.hallEntityToView.seating}">
+                    <c:forEach var="value" items="#{row}">
+                        #{value}
+                    </c:forEach>
+                </c:forEach>
+            </p:panelGrid>    
+        </div>       
+        <h4 align="center">Capacity: #{hallDetailsManagedBean.hallEntityToView.row} x #{hallDetailsManagedBean.hallEntityToView.col}</h4>
+
+        <h:form>
+            <p:menubar>
+                <p:submenu label="Create New Screening Schedule" icon="ui-icon-document">
+                    <p:menuitem value="Screening Schedule" onclick="PF('dialogCreateNewSS').show()" icon="ui-icon-plusthick" />
+                </p:submenu>
+            </p:menubar>
+            <br/>
+        </h:form>
+
+        <h:form id="formAllSS">
+
+            <p:messages id="messages" redisplay="false" closable="true" />
+
+            <p:dataTable id="dataTableAllSS" widgetVar="dataTableAllSS" value="#{hallDetailsManagedBean.screeningSchedules}" var="ssEntity" rowKey="#{ssEntity.id}" rowIndexVar="row"
+                         filteredValue="#{hallDetailsManagedBean.filteredScreeningSchedules}"
+                         rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+
+                <f:facet name="header">
+                    <p:outputPanel style="text-align: right;">
+                        <h:outputText value="Search all fields:" />
+                        <p:inputText id="globalFilter" onkeyup="PF('dataTableAllSS').filter()" style="width:300px" placeholder="Enter keyword"/>
+                    </p:outputPanel>
+                </f:facet>
+
+                <p:column headerText="Schedule ID" sortBy="#{ssEntity.id}" filterBy="#{ssEntity.id}" filterMatchMode="contains">
+                    <h:outputText value="#{ssEntity.id}" />
+                </p:column>
+
+                <p:column headerText="Movie Title" sortBy="#{ssEntity.movieEntity.title}" filterBy="#{ssEntity.movieEntity.title}" filterMatchMode="contains">
+                    <h:outputText value="#{ssEntity.movieEntity.title}" />
+                </p:column>
+
+                <p:column headerText="Time" sortBy="#{ssEntity.screeningTime}" filterBy="#{ssEntity.screeningTime}" filterMatchMode="contains">
+                    <h:outputText value="#{dateConvertManagedBean.dateTimeConvert(ssEntity.screeningTime)}" />
+                </p:column>
+
+
+                <p:column headerText="Action" >
+                    <p:commandButton update="formUpdateSS" oncomplete="PF('dialogUpdateSS').show()" icon="ui-icon-pencil" title="Update">
+                        <f:setPropertyActionListener value="#{ssEntity}" target="#{hallDetailsManagedBean.selectedScheduleToUpdate}" />
+                    </p:commandButton>
+                    <p:commandButton icon="ui-icon-trash" actionListener="#{hallDetailsManagedBean.deleteScreeningSchedule}" update="formAllSS:dataTableAllSS formAllSS:messages">
+                        <f:attribute name="ssEntityToDelete" value="#{ssEntity}" />
+                        <p:confirm header="Confirmation" message="Are you sure you want to delete (ID: #{ssEntity.id})?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                </p:column>
+
+            </p:dataTable>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+
+        </h:form>
+
+        <h:form id="formCreateNewSS">
+
+            <p:dialog id="dialogCreateSS" widgetVar="dialogCreateNewSS" header="Create New Screening Schedule" closable="true">
+
+                <p:messages id="messagesCreateSS" redisplay="false" />
+
+                <p:panelGrid>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="movieName" value="Movie Title: " />
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id ="movieName" value ="#{hallDetailsManagedBean.selectedMovieEntity}" converter="movieEntityConverter" required="true" requiredMessage="Movie title is required">
+                                <f:selectItem itemLabel="Select One" itemValue="" />
+                                <f:selectItems value="#{hallDetailsManagedBean.selectItems}" />
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:message for="movieName" />
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="time" value="Screening Time: " />
+                        </p:column>
+                        <p:column>
+                            <p:calendar id ="time" pattern="dd/MM/yyyy HH:mm" timeOnly="false" value="#{hallDetailsManagedBean.newScreeningSchedule.screeningTime}" required="true" requiredMessage="Screen Date is required" />                                            
+                        </p:column>
+                        <p:message for="time" />
+                    </p:row>
+
+                    <p:row>
+                        <p:column colspan="3">
+                            <p:commandButton type="reset" value="Clear" />&nbsp;
+                            <p:commandButton value="Create New Screening Schedule" update="@form formAllSS:dataTableAllSS" actionListener="#{hallDetailsManagedBean.createNewScreeningSchedule}" oncomplete="PF('dialogCreateNewSS').show();" />
+                        </p:column>
+                    </p:row>
+
+                </p:panelGrid>
+
+            </p:dialog>
+
+        </h:form>
+
+        <h:form id="formUpdateSS">
+
+            <p:dialog id="dialogUpdateSS" widgetVar="dialogUpdateSS" header="Update Screening Schedule" closable="true">
+
+                <p:messages id="messagesUpdateSS" redisplay="false" />
+
+                <p:panelGrid>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="date" value="Date Time: " />
+                        </p:column>
+                        <p:column>
+                            <p:calendar id ="date" pattern="dd/MM/yyyy HH:mm" timeOnly="false" value="#{hallDetailsManagedBean.selectedScheduleToUpdate.screeningTime}" required="true" requiredMessage="Screen Date is required" />                                            
+                        </p:column>
+                        <p:message for="date" />
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="upDatemovie" value="Movie: " />
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id ="upDatemovie" value ="#{hallDetailsManagedBean.selectedMovieEntityToUpdate}" converter="movieEntityConverter" required="true" requiredMessage="Movie title is required">
+                                <f:selectItem itemLabel="Select One" itemValue="" />
+                                <f:selectItems value="#{hallDetailsManagedBean.selectItems}" />
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:message for="upDatemovie" />
+                    </p:row>
+
+                    <p:row>
+                        <p:column colspan="3">
+                            <p:commandButton value="Update Screening Schedule" update="@form formAllSS:dataTableAllSS" actionListener="#{hallDetailsManagedBean.updateScreeningSchedule}" oncomplete="PF('dialogUpdateSS').show();" />
+                        </p:column>
+                    </p:row>
+
+                </p:panelGrid>
+
+            </p:dialog>
+
+        </h:form>
+
+
     </ui:define>
-    
+
 </ui:composition>

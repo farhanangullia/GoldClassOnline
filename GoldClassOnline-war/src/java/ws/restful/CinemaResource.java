@@ -121,7 +121,7 @@ public class CinemaResource {
 
        
             
-             cinemaEntity.getStaffEntities().clear();
+             //cinemaEntity.getStaffEntities().clear();
                 
                 for(HallEntity hall:cinemaEntity.getHalls())
                 {

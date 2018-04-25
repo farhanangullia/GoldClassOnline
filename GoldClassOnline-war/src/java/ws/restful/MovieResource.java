@@ -128,7 +128,7 @@ public class MovieResource {
                 screeningSchedule.getHallEntity().getCinemaEntity().getHalls().clear();
                 screeningSchedule.getTicketEntities().clear();
                 screeningSchedule.setMovieEntity(null);
-                screeningSchedule.getHallEntity().getCinemaEntity().getStaffEntities().clear();
+              //  screeningSchedule.getHallEntity().getCinemaEntity().getStaffEntities().clear();
 
             }
 

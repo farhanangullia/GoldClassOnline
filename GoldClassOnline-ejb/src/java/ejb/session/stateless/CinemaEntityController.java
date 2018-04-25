@@ -66,34 +66,32 @@ public class CinemaEntityController implements CinemaEntityControllerLocal {
 
     @Override
     public List<CinemaEntity> retrieveAllCinemaEntitiesByMovie(Long movieId) { //how
-        Query query = em.createQuery("SELECT DISTINCT c FROM CinemaEntity c, IN (c.halls) h, IN (h.screeningSchedules) ss WHERE ss.movieEntity.id = :inMovieId");
-        query.setParameter("inMovieId", movieId);
-        return query.getResultList();
+        Query query = em.createQuery("SELECT c FROM CinemaEntity c");
+   
         
-        
-//        List<CinemaEntity> cinemaEntities = query.getResultList();
-//        List<CinemaEntity> cinemasWithMovie = new ArrayList<>();
-//
-//        for (CinemaEntity cinemaEntity : cinemaEntities) {
-//
-//            for (HallEntity hall : cinemaEntity.getHalls()) {
-//                for (ScreeningSchedule screeningSchedule : hall.getScreeningSchedules()) {
-//                    if (screeningSchedule.getMovieEntity().getId().equals(movieId)) {
-//                        if (cinemasWithMovie.contains(cinemaEntity)) {
-//                            break;
-//                        }
-//
-//                        cinemasWithMovie.add(cinemaEntity);
-//                        break;
-//                    }
-//
-//                }
-//
-//            }
-//
-//        }
-//
-//        return cinemasWithMovie;
+       List<CinemaEntity> cinemaEntities = query.getResultList();
+        List<CinemaEntity> cinemasWithMovie = new ArrayList<>();
+
+        for (CinemaEntity cinemaEntity : cinemaEntities) {
+
+           for (HallEntity hall : cinemaEntity.getHalls()) {
+              for (ScreeningSchedule screeningSchedule : hall.getScreeningSchedules()) {
+                    if (screeningSchedule.getMovieEntity().getId().equals(movieId)) {
+                       if (cinemasWithMovie.contains(cinemaEntity)) {
+                            break;
+                       }
+
+                        cinemasWithMovie.add(cinemaEntity);
+                        break;
+                    }
+
+                }
+
+            }
+           
+        }
+
+        return cinemasWithMovie;
 
 //        
     }

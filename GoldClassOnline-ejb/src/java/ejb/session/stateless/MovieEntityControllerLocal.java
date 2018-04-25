@@ -12,7 +12,7 @@ import util.exception.MovieNotFoundException;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Local
 public interface MovieEntityControllerLocal {

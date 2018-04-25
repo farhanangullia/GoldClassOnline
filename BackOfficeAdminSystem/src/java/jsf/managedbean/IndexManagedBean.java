@@ -22,7 +22,7 @@ import util.exception.InvalidLoginCredentialException;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Named(value = "indexManagedBean")
 @RequestScoped

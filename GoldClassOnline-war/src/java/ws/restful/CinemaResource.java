@@ -7,6 +7,8 @@ package ws.restful;
 
 import ejb.session.stateless.CinemaEntityControllerLocal;
 import entity.CinemaEntity;
+import entity.HallEntity;
+import entity.ScreeningSchedule;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -77,8 +79,21 @@ public class CinemaResource {
             List<CinemaEntity> cinemaEntities = cinemaEntityControllerLocal.retrieveAllCinemaEntitiesByMovie(movieId);
 
             for (CinemaEntity cinemaEntity : cinemaEntities) {
-                cinemaEntity.getHalls().clear();
+             
                 cinemaEntity.getStaffEntities().clear();
+                
+                for(HallEntity hall:cinemaEntity.getHalls())
+                {
+                    hall.setCinemaEntity(null);
+                   for(ScreeningSchedule screeningSchedule:hall.getScreeningSchedules())
+                   {
+                       screeningSchedule.getTicketEntities().clear();
+                       screeningSchedule.setHallEntity(null);
+                       screeningSchedule.setMovieEntity(null);
+                       
+                   }
+                    
+                }
 
             }
 

@@ -25,7 +25,7 @@ import util.exception.CreateNewCinemaException;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Named(value = "cinemaManagementManagedBean")
 @ViewScoped

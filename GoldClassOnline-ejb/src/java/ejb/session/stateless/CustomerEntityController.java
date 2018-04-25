@@ -20,7 +20,7 @@ import util.security.CryptographicHelper;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Stateless
 public class CustomerEntityController implements CustomerEntityControllerLocal {

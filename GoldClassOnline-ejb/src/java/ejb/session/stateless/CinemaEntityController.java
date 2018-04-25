@@ -18,7 +18,7 @@ import util.exception.CinemaNotFoundException;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Stateless
 public class CinemaEntityController implements CinemaEntityControllerLocal {

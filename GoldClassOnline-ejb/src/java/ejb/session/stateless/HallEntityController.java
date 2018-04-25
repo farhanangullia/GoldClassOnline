@@ -16,7 +16,7 @@ import util.exception.HallNotFoundException;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Stateless
 public class HallEntityController implements HallEntityControllerLocal {

@@ -18,7 +18,7 @@ import util.security.CryptographicHelper;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Stateless
 public class StaffEntityController implements StaffEntityControllerLocal {

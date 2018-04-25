@@ -7,7 +7,7 @@ package util.exception;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 public class CreateNewCinemaException extends Exception {
 

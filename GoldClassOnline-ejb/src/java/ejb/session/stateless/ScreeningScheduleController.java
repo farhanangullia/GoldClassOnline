@@ -19,7 +19,7 @@ import javax.persistence.Query;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Stateless
 public class ScreeningScheduleController implements ScreeningScheduleControllerLocal {

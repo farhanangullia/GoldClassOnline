@@ -12,7 +12,7 @@ import util.exception.CinemaNotFoundException;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Local
 public interface CinemaEntityControllerLocal {

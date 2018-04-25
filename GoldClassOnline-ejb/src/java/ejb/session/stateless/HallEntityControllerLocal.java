@@ -13,7 +13,7 @@ import util.exception.HallNotFoundException;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Local
 public interface HallEntityControllerLocal {

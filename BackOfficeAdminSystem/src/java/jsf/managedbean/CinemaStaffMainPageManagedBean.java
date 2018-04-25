@@ -24,7 +24,7 @@ import util.exception.HallNotFoundException;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Named(value = "cinemaStaffMainPageManagedBean")
 @ViewScoped

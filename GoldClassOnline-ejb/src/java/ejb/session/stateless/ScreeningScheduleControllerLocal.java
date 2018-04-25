@@ -12,7 +12,7 @@ import javax.ejb.Local;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Local
 public interface ScreeningScheduleControllerLocal {

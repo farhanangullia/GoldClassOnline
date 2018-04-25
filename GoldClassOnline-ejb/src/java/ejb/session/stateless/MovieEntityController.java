@@ -17,7 +17,7 @@ import util.exception.MovieNotFoundException;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Stateless
 public class MovieEntityController implements MovieEntityControllerLocal {

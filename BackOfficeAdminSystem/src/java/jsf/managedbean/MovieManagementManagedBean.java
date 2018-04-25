@@ -21,7 +21,7 @@ import util.exception.MovieNotFoundException;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Named(value = "movieManagementManagedBean")
 @ViewScoped

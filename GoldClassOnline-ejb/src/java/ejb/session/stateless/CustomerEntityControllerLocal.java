@@ -13,7 +13,7 @@ import util.exception.InvalidLoginCredentialException;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Local
 public interface CustomerEntityControllerLocal {

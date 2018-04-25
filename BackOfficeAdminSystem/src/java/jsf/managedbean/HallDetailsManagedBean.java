@@ -26,7 +26,7 @@ import javax.faces.view.ViewScoped;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Named(value = "hallDetailsManagedBean")
 @ViewScoped

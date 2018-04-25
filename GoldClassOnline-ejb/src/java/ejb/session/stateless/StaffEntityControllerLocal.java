@@ -12,7 +12,7 @@ import util.exception.StaffNotFoundException;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Local
 public interface StaffEntityControllerLocal {

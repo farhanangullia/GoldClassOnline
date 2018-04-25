@@ -12,7 +12,7 @@ import javax.persistence.PersistenceContext;
 
 /**
  *
- * @author KERK
+ * @author 
  */
 @Stateless
 public class TicketEntityController implements TicketEntityControllerLocal {

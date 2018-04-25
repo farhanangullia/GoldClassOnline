@@ -51,6 +51,7 @@ public class MovieEntityController implements MovieEntityControllerLocal {
     public MovieEntity retrieveMovieByMovieId(Long movieId) {
         MovieEntity movieEntity = em.find(MovieEntity.class, movieId);
 
+        
         return movieEntity;
 
     }

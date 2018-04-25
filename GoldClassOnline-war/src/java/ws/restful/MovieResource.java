@@ -22,9 +22,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import util.exception.MovieNotFoundException;
 import ws.restful.datamodel.ErrorRsp;
 import ws.restful.datamodel.RetrieveAllMoviesByCinemaRsp;
 import ws.restful.datamodel.RetrieveAllMoviesRsp;
+import ws.restful.datamodel.RetrieveMovieRsp;
 
 /**
  * REST Web Service
@@ -103,6 +105,36 @@ public class MovieResource {
             RetrieveAllMoviesByCinemaRsp retrieveAllMoviesByCinemaRsp = new RetrieveAllMoviesByCinemaRsp(movieEntities);
 
             return Response.status(Response.Status.OK).entity(retrieveAllMoviesByCinemaRsp).build();
+
+        } catch (Exception ex) {
+            ErrorRsp errorRsp = new ErrorRsp(ex.getMessage());
+
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorRsp).build();
+        }
+    }
+
+    @Path("retrieveMovie/{movieId}")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveMovie(@PathParam("movieId") Long movieId) {
+        try {
+
+            MovieEntity movieEntity = movieEntityControllerLocal.retrieveMovieByMovieId(movieId);
+
+            for (ScreeningSchedule screeningSchedule : movieEntity.getScreeningSchedules()) {
+
+                screeningSchedule.getHallEntity().getScreeningSchedules().clear();
+                screeningSchedule.getHallEntity().getCinemaEntity().getHalls().clear();
+                screeningSchedule.getTicketEntities().clear();
+                screeningSchedule.setMovieEntity(null);
+                screeningSchedule.getHallEntity().getCinemaEntity().getStaffEntities().clear();
+
+            }
+
+            RetrieveMovieRsp retrieveMovieRsp = new RetrieveMovieRsp(movieEntity);
+
+            return Response.status(Response.Status.OK).entity(retrieveMovieRsp).build();
 
         } catch (Exception ex) {
             ErrorRsp errorRsp = new ErrorRsp(ex.getMessage());

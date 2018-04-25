@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 import ws.restful.datamodel.ErrorRsp;
 import ws.restful.datamodel.RetrieveAllCinemasByMovieRsp;
 import ws.restful.datamodel.RetrieveAllCinemasRsp;
+import ws.restful.datamodel.RetrieveCinemaRsp;
 
 /**
  * REST Web Service
@@ -107,6 +108,57 @@ public class CinemaResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorRsp).build();
         }
     }
+    
+    
+     @Path("retrieveCinema/{cinemaId}")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveCinema(@PathParam("cinemaId") Long cinemaId) {
+        try {
+
+            CinemaEntity cinemaEntity = cinemaEntityControllerLocal.retrieveCinemaByCinemaId(cinemaId);
+
+       
+            
+             cinemaEntity.getStaffEntities().clear();
+                
+                for(HallEntity hall:cinemaEntity.getHalls())
+                {
+                    hall.setCinemaEntity(null);
+                   for(ScreeningSchedule screeningSchedule:hall.getScreeningSchedules())
+                   {
+                       screeningSchedule.getTicketEntities().clear();
+                       screeningSchedule.setHallEntity(null);
+                       screeningSchedule.setMovieEntity(null);
+                       
+                   }
+                    
+                }
+            
+
+            RetrieveCinemaRsp retrieveCinemaRsp = new RetrieveCinemaRsp(cinemaEntity);
+
+            return Response.status(Response.Status.OK).entity(retrieveCinemaRsp).build();
+
+        } catch (Exception ex) {
+            ErrorRsp errorRsp = new ErrorRsp(ex.getMessage());
+
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorRsp).build();
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     private CinemaEntityControllerLocal lookupCinemaEntityControllerLocal() {
         try {

@@ -45,10 +45,8 @@ public class IndexManagedBean {
 
              String accountType;
             if (currentStaffEntity.getAccessRightEnum().equals(AccessRightEnum.CINEMASTAFF)) {
-                accountType = "cinemaStaff";
-                Long cinemaEntityId = currentStaffEntity.getCinemaEntity().getId();
+                accountType = "cinemaStaff";    
                 FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("currentStaffEntity", currentStaffEntity);
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("selectedCinemaEntityId", (Long) cinemaEntityId);
             } else {
                 accountType = "admin";
                 FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("currentStaffEntity", currentStaffEntity);

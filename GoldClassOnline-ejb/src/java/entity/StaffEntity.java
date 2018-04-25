@@ -38,8 +38,6 @@ public class StaffEntity implements Serializable {
     private String password;
     @Column(columnDefinition = "CHAR(32) NOT NULL")
     private String salt;
-    @ManyToOne(fetch = FetchType.EAGER)
-    private CinemaEntity cinemaEntity;
     
     public StaffEntity() {
         this.salt = CryptographicHelper.getInstance().generateRandomString(32);
@@ -138,13 +136,5 @@ public class StaffEntity implements Serializable {
 
     public void setAccessRightEnum(AccessRightEnum accessRightEnum) {
         this.accessRightEnum = accessRightEnum;
-    }
-
-    public CinemaEntity getCinemaEntity() {
-        return cinemaEntity;
-    }
-
-    public void setCinemaEntity(CinemaEntity cinemaEntity) {
-        this.cinemaEntity = cinemaEntity;
     }
 }

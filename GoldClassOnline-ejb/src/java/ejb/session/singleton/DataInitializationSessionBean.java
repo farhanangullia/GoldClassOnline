@@ -71,8 +71,8 @@ public class DataInitializationSessionBean {
         try {
 
             StaffEntity admin = staffEntityControllerLocal.createStaffEntity(new StaffEntity("Admin", "Manager", AccessRightEnum.ADMIN, "manager", "password"));
-            StaffEntity cinemaStaff = staffEntityControllerLocal.createStaffEntity(new StaffEntity("Cinema", "Staff", AccessRightEnum.CINEMASTAFF, "cinemastaff", "password"));
-            StaffEntity cinemaStaff2 = staffEntityControllerLocal.createStaffEntity(new StaffEntity("Cinema", "Staff", AccessRightEnum.CINEMASTAFF, "staff", "password"));
+            StaffEntity cinemaStaff = staffEntityControllerLocal.createStaffEntity(new StaffEntity("Cinema", "Staff", AccessRightEnum.CINEMASTAFF, "staff", "password"));
+ 
             
             MovieEntity movieEntity = movieEntityControllerLocal.createMovieEntity(new MovieEntity("Avengers", "Action", "Robert Downey Jr, Chris Evans, Black Panther, Scarlett Johansson", "Russo Brother", 180 , "English", "Avengers assemble to save Earth!", "PG13","../assets/img/avengers.jpg"));
             movieEntity.setEnabled(Boolean.TRUE);
@@ -82,11 +82,8 @@ public class DataInitializationSessionBean {
             CinemaEntity cinemaEntity = cinemaEntityControllerLocal.createCinemaEntity(new CinemaEntity("Star Movie", "Kent Ridge Drive", "123456"));
             cinemaEntity.setEnabled(Boolean.TRUE);
             CinemaEntity cinemaEntity2 = cinemaEntityControllerLocal.createCinemaEntity(new CinemaEntity("Best Movie", "313 Orchard", "111313"));
-            cinemaStaff.setCinemaEntity(cinemaEntity);
-            cinemaEntity.getStaffEntities().add(cinemaStaff);
-            cinemaStaff2.setCinemaEntity(cinemaEntity2);
-            cinemaEntity2.getStaffEntities().add(cinemaStaff2);
-
+            cinemaEntity2.setEnabled(Boolean.TRUE);
+            
             HallEntity hallEntity = hallEntityControllerLocal.createHallEntity(new HallEntity("Premium", 5, 6), cinemaEntity.getId());
             hallEntity.setEnabled(Boolean.TRUE);
             char[][] seating = new char[hallEntity.getRow()][hallEntity.getCol()];

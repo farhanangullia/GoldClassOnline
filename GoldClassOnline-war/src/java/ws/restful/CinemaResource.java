@@ -56,7 +56,7 @@ public class CinemaResource {
 
             for (CinemaEntity cinemaEntity : cinemaEntities) {
                 cinemaEntity.getHalls().clear();
-                cinemaEntity.getStaffEntities().clear();
+               // cinemaEntity.getStaffEntities().clear();
 
             }
 
@@ -80,7 +80,7 @@ public class CinemaResource {
 
             for (CinemaEntity cinemaEntity : cinemaEntities) {
              
-                cinemaEntity.getStaffEntities().clear();
+               // cinemaEntity.getStaffEntities().clear();
                 
                 for(HallEntity hall:cinemaEntity.getHalls())
                 {

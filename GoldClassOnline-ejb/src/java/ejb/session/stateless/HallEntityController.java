@@ -59,11 +59,35 @@ public class HallEntityController implements HallEntityControllerLocal {
         }
         he.setSeating(seating);
     }
+    
+    @Override
+    public void updateHallEntityWithCinemaEntity(HallEntity hallEntity, CinemaEntity cinemaEntity) {
+        HallEntity he = retrieveHallByHallId(hallEntity.getId());
+        he.setRow(hallEntity.getRow());
+        he.setCol(hallEntity.getCol());
+        he.setName(hallEntity.getName());
+        he.setCinemaEntity(cinemaEntity);
+        char[][] seating = new char[hallEntity.getRow()][hallEntity.getCol()];
+        for (int i = 0; i < hallEntity.getRow(); i++) {
+            for (int j = 0; j < hallEntity.getCol(); j++) {
+                seating[i][j] = 'o';
+            }
+        }
+        he.setSeating(seating);
+    }
 
     @Override
     public List<HallEntity> retrieveAllHalls(Long cinemaId) {
         Query query = em.createQuery("SELECT h FROM HallEntity h WHERE h.cinemaEntity.id = :inCinemaId AND h.enabled=1");
         query.setParameter("inCinemaId", cinemaId);
+
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<HallEntity> retrieveAllHallsForCinemaStaff() {
+        Query query = em.createQuery("SELECT h FROM HallEntity h WHERE h.enabled=1");
+ 
 
         return query.getResultList();
     }

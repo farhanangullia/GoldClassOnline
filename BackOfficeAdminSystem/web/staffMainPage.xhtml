@@ -10,48 +10,12 @@
 
         <h3>Welcome, <h:outputText style="color:blue;" value="#{sessionScope['currentStaffEntity'].firstName}!"/></h3>
 
-        <p:panelGrid>
-
-            <p:row>
-                <p:column>
-                    <h:outputLabel value="Cinema ID: " />
-                </p:column>
-                <p:column>
-                    <h:outputText value="#{cinemaStaffMainPageManagedBean.cinemaEntityToView.id}" />
-                </p:column>
-            </p:row>
-
-            <p:row>
-                <p:column>
-                    <h:outputLabel value="Name: " />
-                </p:column>
-                <p:column>
-                    <h:outputText value="#{cinemaStaffMainPageManagedBean.cinemaEntityToView.name}" />
-                </p:column>
-            </p:row>
-
-            <p:row>
-                <p:column>
-                    <h:outputLabel value="Address: " />
-                </p:column>
-                <p:column>
-                    <h:outputText value="#{cinemaStaffMainPageManagedBean.cinemaEntityToView.address}" />
-                </p:column>
-            </p:row>
-
-            <p:row>
-                <p:column>
-                    <h:outputLabel value="Postal Code: " />
-                </p:column>
-                <p:column>
-                    <h:outputText value="#{cinemaStaffMainPageManagedBean.cinemaEntityToView.postalCode}" />
-                </p:column>
-            </p:row>
-
-        </p:panelGrid>
+        <h3>Staff Administration :: Hall Management</h3>
         <br/>
 
         <h:form>
+
+            <h:form>
             <p:menubar>
                 <p:submenu label="Create New Hall" icon="ui-icon-document">
                     <p:menuitem value="Create New Hall" onclick="PF('dialogCreateNewHall').show()" icon="ui-icon-plusthick" />
@@ -60,33 +24,50 @@
         </h:form>
         <br/>
 
+        </h:form>
+
         <h:form id="formAllHalls">
 
             <p:messages id="messages" redisplay="false" closable="true" />
 
-            <p:dataTable id="dataTableAllHalls" var="hallEntity" value="#{cinemaStaffMainPageManagedBean.hallEntities}">
-                <p:column headerText="Hall Id">
+            <p:dataTable id="dataTableAllHalls" widgetVar="dataTableAllHalls" value="#{cinemaStaffMainPageManagedBean.hallEntities}" var="hallEntity" rowKey="#{hallEntity.id}" rowIndexVar="row"
+                         filteredValue="#{cinemaStaffMainPageManagedBean.filteredHallEntities}"
+                         rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+
+                <f:facet name="header">
+                    <p:outputPanel style="text-align: right;">
+                        <h:outputText value="Search all fields:" />
+                        <p:inputText id="globalFilter" onkeyup="PF('dataTableAllHalls').filter()" style="width:300px" placeholder="Enter keyword"/>
+                    </p:outputPanel>
+                </f:facet>
+                     
+                <p:column headerText="Cinema Name" sortBy="#{hallEntity.cinemaEntity.name}" filterBy="#{hallEntity.cinemaEntity.name}" filterMatchMode="contains">
+                    <h:outputText value="#{hallEntity.cinemaEntity.name}" />
+                </p:column>
+
+                <p:column headerText="Hall ID" sortBy="#{hallEntity.id}" filterBy="#{hallEntity.id}" filterMatchMode="contains">
                     <h:outputText value="#{hallEntity.id}" />
                 </p:column>
 
-                <p:column headerText="Hall Name">
+                <p:column headerText="Hall Name" sortBy="#{hallEntity.name}" filterBy="#{hallEntity.name}" filterMatchMode="contains">
                     <h:outputText value="#{hallEntity.name}" />
                 </p:column>
 
-                <p:column headerText="Rows">
+                <p:column headerText="Rows" sortBy="#{hallEntity.row}" filterBy="#{hallEntity.row}" filterMatchMode="contains">
                     <h:outputText value="#{hallEntity.row}" />
                 </p:column>
 
-                <p:column headerText="Columns">
+                <p:column headerText="Columns" sortBy="#{hallEntity.col}" filterBy="#{hallEntity.col}" filterMatchMode="contains">
                     <h:outputText value="#{hallEntity.col}" />
                 </p:column>
+                
 
                 <p:column headerText="Action" >
                     <p:commandButton update="formViewHall" oncomplete="PF('dialogViewHall').show()" icon="ui-icon-document" title="View">
                         <f:setPropertyActionListener value="#{hallEntity}" target="#{cinemaStaffMainPageManagedBean.selectedHallEntityToView}" />
                     </p:commandButton>
-                     <p:commandButton update="formUpdateHall" oncomplete="PF('dialogUpdateHall').show()" icon="ui-icon-pencil" title="Update">
-                         <f:setPropertyActionListener value="#{hallEntity}" target="#{cinemaStaffMainPageManagedBean.selectedHallEntityToUpDate}" />
+                    <p:commandButton update="formUpdateHall" oncomplete="PF('dialogUpdateHall').show()" icon="ui-icon-pencil" title="Update">
+                        <f:setPropertyActionListener value="#{hallEntity}" target="#{cinemaStaffMainPageManagedBean.selectedHallEntityToUpdate}" />
                     </p:commandButton>
                     <p:commandButton icon="ui-icon-trash" actionListener="#{cinemaStaffMainPageManagedBean.deleteHall}" update="formAllHalls:dataTableAllHalls formAllHalls:messages">
                         <f:attribute name="hallEntityToDelete" value="#{hallEntity}" />
@@ -95,29 +76,17 @@
                 </p:column>
 
             </p:dataTable>
+
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
             </p:confirmDialog>
-        </h:form>   
-
-        <h:form id="formViewHall">
-
-            <p:dialog id="dialogViewHall" widgetVar="dialogViewHall" header="View Hall" closable="true">
-
-                <p:panelGrid>
-                    <p:commandButton icon="ui-icon-document" title="View" actionListener="#{cinemaStaffMainPageManagedBean.viewHallDetails}">
-                        <f:attribute name="hallId" value="#{cinemaStaffMainPageManagedBean.selectedHallEntityToView.id}"/>
-                    </p:commandButton>
-                </p:panelGrid>
-
-            </p:dialog>
 
         </h:form>
 
         <h:form id="formCreateNewHall">
 
-            <p:dialog id="dialogCreateNewHall" widgetVar="dialogCreateNewHall" header="Create New Hall" closable="true">
+            <p:dialog id="dialogCreateNewHall" widgetVar="dialogCreateNewHall" header="Add New Hall" closable="true">
 
                 <p:messages id="messagesCreateNewHall" redisplay="false" />
 
@@ -130,27 +99,47 @@
                         <p:column>
                             <p:inputText id="hallName" value="#{cinemaStaffMainPageManagedBean.newHallEntity.name}" required="true" requiredMessage="Hall name is required" />
                         </p:column>
-                        <p:message for="hallName" />
+                        <p:column>
+                            <p:message for="hallName" />
+                        </p:column>
                     </p:row>
 
                     <p:row>
                         <p:column>
-                            <p:outputLabel for="hallRow" value="Row: " />
+                            <p:outputLabel for="rows" value="Rows: " />
                         </p:column>
                         <p:column>
-                            <p:inputText id="hallRow" value="#{cinemaStaffMainPageManagedBean.newHallEntity.row}" required="true" requiredMessage="Number of rows is required" />
+                            <p:inputText id="rows" value="#{cinemaStaffMainPageManagedBean.newHallEntity.row}" required="true" requiredMessage="Number of rows is required" />
                         </p:column>
-                        <p:message for="hallRow" />
+                        <p:column>
+                            <p:message for="rows" />
+                        </p:column>
                     </p:row>
 
                     <p:row>
                         <p:column>
-                            <p:outputLabel for="hallCol" value="Column: " />
+                            <p:outputLabel for="cols" value="Columns: " />
                         </p:column>
                         <p:column>
-                            <p:inputText id="hallCol" value="#{cinemaStaffMainPageManagedBean.newHallEntity.col}" required="true" requiredMessage="Number of cols is required" />
+                            <p:inputText id="cols" value="#{cinemaStaffMainPageManagedBean.newHallEntity.col}" required="true" requiredMessage="Number of columns is required" />
                         </p:column>
-                        <p:message for="hallCol" />
+                        <p:column>
+                            <p:message for="cols" />
+                        </p:column>
+                    </p:row>
+                    
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="cinemaName" value="Cinema: " />
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id ="cinemaName" value ="#{cinemaStaffMainPageManagedBean.selectedCinemaEntity}" converter="cinemaEntityConverter" required="true" requiredMessage="Cinema is required">
+                                <f:selectItem itemLabel="Select One" itemValue="" />
+                                <f:selectItems value="#{cinemaStaffMainPageManagedBean.selectItems}"/>
+                      
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:message for="cinemaName" />
                     </p:row>
 
                     <p:row>
@@ -161,58 +150,90 @@
                     </p:row>
 
                 </p:panelGrid>
-            </p:dialog>  
+
+            </p:dialog>
+
         </h:form>
-        
+
+        <h:form id="formViewHall">
+
+            <p:dialog id="dialogViewHall" widgetVar="dialogViewHall" header="View Hall" closable="true">
+
+                <p:panelGrid>
+
+                    <p:commandButton icon="ui-icon-document" title="View" actionListener="#{cinemaStaffMainPageManagedBean.viewHallDetails}">
+                        <f:attribute name="hallId" value="#{cinemaStaffMainPageManagedBean.selectedHallEntityToView.id}"/>
+                    </p:commandButton>
+
+
+                </p:panelGrid>
+
+            </p:dialog>
+
+        </h:form>
+
         <h:form id="formUpdateHall">
-            
-            <p:dialog id="dialogUpdateHall" widgetVar="dialogUpdateHall" header="Update Cinema" closable="true">
+
+            <p:dialog id="dialogUpdateHall" widgetVar="dialogUpdateHall" header="Update Hall" closable="true">
 
                 <p:messages id="messagesUpdateHall" redisplay="false" />
-                
+
                 <p:panelGrid>
-                    
-   
+
+
                     <p:row>
                         <p:column>
-                            <p:outputLabel for="name" value="Name: " />
+                            <p:outputLabel for="name" value="Hall Name: " />
                         </p:column>
                         <p:column>
-                            <p:inputText id="name" value="#{cinemaStaffMainPageManagedBean.selectedHallEntityToUpDate.name}" required="true" requiredMessage="Cinema name is required" />
+                            <p:inputText id="name" value="#{cinemaStaffMainPageManagedBean.selectedHallEntityToUpdate.name}" required="true" requiredMessage="Hall name is required" />
                         </p:column>
-                            <p:message for="name" />
+                        <p:message for="name" />
                     </p:row>
-                    
+
                     <p:row>
                         <p:column>
-                            <p:outputLabel for="rows" value="Rows: " />
+                            <p:outputLabel for="row" value="Rows: " />
                         </p:column>
                         <p:column>
-                            <p:inputText id="rows" value="#{cinemaStaffMainPageManagedBean.selectedHallEntityToUpDate.row}" required="true" requiredMessage="Rows is required" />
+                            <p:inputText id="row" value="#{cinemaStaffMainPageManagedBean.selectedHallEntityToUpdate.row}" required="true" requiredMessage="Number of rows is required" />
                         </p:column>
-                            <p:message for="rows" />
+                        <p:message for="row" />
                     </p:row>
-                    
+
                     <p:row>
                         <p:column>
                             <p:outputLabel for="cols" value="Columns: " />
                         </p:column>
                         <p:column>
-                            <p:inputText id="cols" value="#{cinemaStaffMainPageManagedBean.selectedHallEntityToUpDate.col}" required="true" requiredMessage="Columns is required" />
+                            <p:inputText id="cols" value="#{cinemaStaffMainPageManagedBean.selectedHallEntityToUpdate.col}" required="true" requiredMessage="Number of columns is required" />
                         </p:column>
-                            <p:message for="cols" />
+                        <p:message for="cols" />
                     </p:row>
                     
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="upDatehall" value="Cinema: " />
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id ="upDatehall" value ="#{cinemaStaffMainPageManagedBean.selectedCinemaEntityToUpdate}" converter="cinemaEntityConverter" required="true" requiredMessage="Cinema is required">
+                                <f:selectItem itemLabel="Select One" itemValue="" />
+                                <f:selectItems value="#{cinemaStaffMainPageManagedBean.selectItems}" />
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:message for="upDatehall" />
+                    </p:row>
+
                     <p:row>
                         <p:column colspan="3">
                             <p:commandButton value="Update Hall" update="@form formAllHalls:dataTableAllHalls" actionListener="#{cinemaStaffMainPageManagedBean.updateHall}" oncomplete="PF('dialogUpdateHall').show();" />
                         </p:column>
                     </p:row>
-                    
+
                 </p:panelGrid>
 
             </p:dialog>
-            
+
         </h:form>
 
     </ui:define>

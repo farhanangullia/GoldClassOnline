@@ -14,10 +14,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.model.SelectItem;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import util.exception.HallNotFoundException;
@@ -35,90 +37,110 @@ public class CinemaStaffMainPageManagedBean implements Serializable {
 
     @EJB
     private CinemaEntityControllerLocal cinemaEntityControllerLocal;
-
-    private CinemaEntity cinemaEntityToView;
-    private Long cinemaEntityToViewId;
-    private HallEntity newHallEntity;
+    
+    private HallEntity selectedHallEntityToUpdate;
     private HallEntity selectedHallEntityToView;
-    private HallEntity selectedHallEntityToUpDate;
-
+    private HallEntity newHallEntity;
+    
+    private CinemaEntity selectedCinemaEntity;
+    private CinemaEntity selectedCinemaEntityToUpdate;
+    
     private List<HallEntity> hallEntities;
+    private List<HallEntity> filteredHallEntities;
+    
+    private List<CinemaEntity> cinemaEntities;
+    
+    private List<SelectItem> selectItems;
+
+    
+   
 
     public CinemaStaffMainPageManagedBean() {
         hallEntities = new ArrayList<>();
-        cinemaEntityToView = new CinemaEntity();
+        filteredHallEntities = new ArrayList<>();
+        selectedHallEntityToUpdate = new HallEntity();
+        selectedHallEntityToView = new HallEntity();
         newHallEntity = new HallEntity();
+        selectItems = new ArrayList<>();
+        cinemaEntities = new ArrayList<>();
+        selectedCinemaEntity = new CinemaEntity();
+        selectedCinemaEntityToUpdate = new CinemaEntity();
+                
+  
     }
 
     @PostConstruct
     public void postConstruct() {
-        cinemaEntityToViewId = (Long) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("selectedCinemaEntityId");
-        hallEntities = hallEntityControllerLocal.retrieveAllHalls(cinemaEntityToViewId);
-        cinemaEntityToView = cinemaEntityControllerLocal.retrieveCinemaByCinemaId(cinemaEntityToViewId);
+        hallEntities = hallEntityControllerLocal.retrieveAllHallsForCinemaStaff();
+        filteredHallEntities = hallEntities;
+        cinemaEntities = cinemaEntityControllerLocal.retrieveAllCinemaEntities();
+         for(CinemaEntity cinemaEntity: cinemaEntities)
+        {
+            selectItems.add(new SelectItem(cinemaEntity, cinemaEntity.getName(), cinemaEntity.getId().toString()));
+        }
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("CinemaEntityConverter.cinemaEntities", cinemaEntities);
+     
     }
-
-    public void createNewHall() {
-
-        HallEntity he = hallEntityControllerLocal.createHallEntity(newHallEntity, cinemaEntityToViewId);
+    
+    @PreDestroy
+    public void preDestroy()
+    {
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("CinemaEntityConverter.cinemaEntities", null);
+    }
+    
+    public void createNewHall(ActionEvent event) {
+        HallEntity he = hallEntityControllerLocal.createHallEntity(newHallEntity, selectedCinemaEntity.getId());
         hallEntities.add(he);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("New hall created successfully (Cinema ID: " + newHallEntity.getId() + ")"));
+        filteredHallEntities.add(he);
         newHallEntity = new HallEntity();
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New hall created successfully (Screening Schedule ID: " + he.getId() + ")", null));     
     }
+    
+    
+    public void deleteHall(ActionEvent event)
+    {
+        try
+        {
+            HallEntity hallEntityToDelete = (HallEntity)event.getComponent().getAttributes().get("hallEntityToDelete");
+            hallEntityControllerLocal.deleteHall(hallEntityToDelete.getId());
+            
+            hallEntities.remove(hallEntityToDelete);
+            filteredHallEntities.remove(hallEntityToDelete);
 
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Hall deleted successfully", null));
+        }
+        catch (Exception ex)
+        {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
+        }
+    }
+    
     public void viewHallDetails(ActionEvent event) throws IOException {
-
+        
         Long hallEntityToViewId = (Long) event.getComponent().getAttributes().get("hallId");
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("hallIdToView", hallEntityToViewId);
         FacesContext.getCurrentInstance().getExternalContext().redirect("viewHallDetails.xhtml");
     }
-
-    public void deleteHall(ActionEvent event) {
-        try {
-            HallEntity hallEntityToDelete = (HallEntity) event.getComponent().getAttributes().get("hallEntityToDelete");
-            hallEntityControllerLocal.deleteHall(hallEntityToDelete.getId());
-
-            hallEntities.remove(hallEntityToDelete);
-
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Hall deleted successfully", null));
-        } catch (HallNotFoundException ex) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while deleting hall: " + ex.getMessage(), null));
-        } catch (Exception ex) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
-        }
-    }
-
-    public void updateHall(ActionEvent event) {
-        try {
-            hallEntityControllerLocal.updateHallEntity(selectedHallEntityToUpDate);
-
+    
+     public void updateHall(ActionEvent event) {
+        try
+        {       
+            hallEntityControllerLocal.updateHallEntityWithCinemaEntity(selectedHallEntityToUpdate, selectedCinemaEntityToUpdate);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Hall updated successfully", null));
-        } catch (Exception ex) {
+        }
+        catch(Exception ex)
+        {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
     }
+  
 
-    public CinemaEntity getCinemaEntityToView() {
-        return cinemaEntityToView;
+    public List<HallEntity> getFilteredHallEntities() {
+        return filteredHallEntities;
     }
 
-    public void setCinemaEntityToView(CinemaEntity cinemaEntityToView) {
-        this.cinemaEntityToView = cinemaEntityToView;
-    }
-
-    public Long getCinemaEntityToViewId() {
-        return cinemaEntityToViewId;
-    }
-
-    public void setCinemaEntityToViewId(Long cinemaEntityToViewId) {
-        this.cinemaEntityToViewId = cinemaEntityToViewId;
-    }
-
-    public HallEntity getNewHallEntity() {
-        return newHallEntity;
-    }
-
-    public void setNewHallEntity(HallEntity newHallEntity) {
-        this.newHallEntity = newHallEntity;
+    public void setFilteredHallEntities(List<HallEntity> filteredHallEntities) {
+        this.filteredHallEntities = filteredHallEntities;
     }
 
     public List<HallEntity> getHallEntities() {
@@ -129,6 +151,14 @@ public class CinemaStaffMainPageManagedBean implements Serializable {
         this.hallEntities = hallEntities;
     }
 
+     public HallEntity getSelectedHallEntityToUpdate() {
+        return selectedHallEntityToUpdate;
+    }
+
+    public void setSelectedHallEntityToUpdate(HallEntity selectedHallEntityToUpdate) {
+        this.selectedHallEntityToUpdate = selectedHallEntityToUpdate;
+    }
+
     public HallEntity getSelectedHallEntityToView() {
         return selectedHallEntityToView;
     }
@@ -137,12 +167,44 @@ public class CinemaStaffMainPageManagedBean implements Serializable {
         this.selectedHallEntityToView = selectedHallEntityToView;
     }
 
-    public HallEntity getSelectedHallEntityToUpDate() {
-        return selectedHallEntityToUpDate;
+    public HallEntity getNewHallEntity() {
+        return newHallEntity;
     }
 
-    public void setSelectedHallEntityToUpDate(HallEntity selectedHallEntityToUpDate) {
-        this.selectedHallEntityToUpDate = selectedHallEntityToUpDate;
+    public void setNewHallEntity(HallEntity newHallEntity) {
+        this.newHallEntity = newHallEntity;
+    }
+
+    public List<CinemaEntity> getCinemaEntities() {
+        return cinemaEntities;
+    }
+
+    public void setCinemaEntities(List<CinemaEntity> cinemaEntities) {
+        this.cinemaEntities = cinemaEntities;
+    }
+
+    public List<SelectItem> getSelectItems() {
+        return selectItems;
+    }
+
+    public void setSelectItems(List<SelectItem> selectItems) {
+        this.selectItems = selectItems;
+    }
+
+    public CinemaEntity getSelectedCinemaEntity() {
+        return selectedCinemaEntity;
+    }
+
+    public void setSelectedCinemaEntity(CinemaEntity selectedCinemaEntity) {
+        this.selectedCinemaEntity = selectedCinemaEntity;
+    }
+
+    public CinemaEntity getSelectedCinemaEntityToUpdate() {
+        return selectedCinemaEntityToUpdate;
+    }
+
+    public void setSelectedCinemaEntityToUpdate(CinemaEntity selectedCinemaEntityToUpdate) {
+        this.selectedCinemaEntityToUpdate = selectedCinemaEntityToUpdate;
     }
 
 }

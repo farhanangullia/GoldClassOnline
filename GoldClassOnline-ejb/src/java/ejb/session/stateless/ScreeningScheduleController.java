@@ -48,7 +48,7 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
         
         Date endTime = calendar.getTime();
         screeningSchedule.setScreeningEndTime(endTime);
- 
+        
         em.persist(screeningSchedule);
         em.flush();
         em.refresh(screeningSchedule);

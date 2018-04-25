@@ -56,14 +56,12 @@ public class HallManagementManagedBean implements Serializable {
     public void postConstruct()
     {
         cinemaEntityToViewId = (Long)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("cinemaIdToView");
-        System.err.println("ID: " + cinemaEntityToViewId);
         hallEntities = hallEntityControllerLocal.retrieveAllHalls(cinemaEntityToViewId);
         cinemaEntityToView = cinemaEntityControllerLocal.retrieveCinemaByCinemaId(cinemaEntityToViewId);
     }
     
      public void createNewHall() {
         
-        System.err.println("This is the associated hall ID: " + cinemaEntityToViewId);
         HallEntity he = hallEntityControllerLocal.createHallEntity(newHallEntity, cinemaEntityToViewId);
         hallEntities.add(he);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("New hall created successfully (Cinema ID: " + newHallEntity.getId()+ ")"));

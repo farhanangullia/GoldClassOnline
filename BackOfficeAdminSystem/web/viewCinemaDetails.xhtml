@@ -88,8 +88,8 @@
                 </p:column>
 
                 <p:column headerText="Action" >
-                    <p:commandButton update="formViewHall" oncomplete="PF('dialogViewHall').show()" icon="ui-icon-document" title="View">
-                        <f:setPropertyActionListener value="#{hallEntity}" target="#{hallManagementManagedBean.selectedHallEntityToView}" />
+                    <p:commandButton icon="ui-icon-document" actionListener="#{hallManagementManagedBean.viewHallDetails}" update="formAllHalls:dataTableAllHalls formAllHalls:messages">
+                        <f:attribute name="hallId" value="#{hallEntity.id}" />
                     </p:commandButton>
                      <p:commandButton update="formUpdateHall" oncomplete="PF('dialogUpdateHall').show()" icon="ui-icon-pencil" title="Update">
                          <f:setPropertyActionListener value="#{hallEntity}" target="#{hallManagementManagedBean.selectedHallEntityToUpDate}" />
@@ -106,20 +106,6 @@
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
             </p:confirmDialog>
         </h:form>   
-
-        <h:form id="formViewHall">
-
-            <p:dialog id="dialogViewHall" widgetVar="dialogViewHall" header="View Hall" closable="true">
-
-                <p:panelGrid>
-                    <p:commandButton icon="ui-icon-document" title="View" actionListener="#{hallManagementManagedBean.viewHallDetails}">
-                        <f:attribute name="hallId" value="#{hallManagementManagedBean.selectedHallEntityToView.id}"/>
-                    </p:commandButton>
-                </p:panelGrid>
-
-            </p:dialog>
-
-        </h:form>
 
         <h:form id="formCreateNewHall">
 

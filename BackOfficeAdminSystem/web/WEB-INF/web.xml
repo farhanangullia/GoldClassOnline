@@ -21,4 +21,16 @@
     <welcome-file-list>
         <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
+    <ejb-local-ref>
+        <ejb-ref-name>MovieEntityController</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>ejb.session.stateless.MovieEntityControllerLocal</local>
+        <ejb-link>GoldClassOnline-ejb.jar#MovieEntityController</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ScreeningScheduleController</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>ejb.session.stateless.ScreeningScheduleControllerLocal</local>
+        <ejb-link>GoldClassOnline-ejb.jar#ScreeningScheduleController</ejb-link>
+    </ejb-local-ref>
 </web-app>

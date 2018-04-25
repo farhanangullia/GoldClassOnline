@@ -93,7 +93,7 @@ public class HallDetailsManagedBean implements Serializable {
     public void createNewScreeningSchedule(ActionEvent event) {
         ScreeningSchedule se = screeningScheduleControllerLocal.createScreeningSchedule(newScreeningSchedule, selectedMovieEntity,hallEntityToViewId);
         screeningSchedules.add(se);
-        filteredScreeningSchedules.add(se);
+        filteredScreeningSchedules = screeningSchedules;
         newScreeningSchedule = new ScreeningSchedule();
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New cinema created successfully (Screening Schedule ID: " + se.getId() + ")", null));     
     }

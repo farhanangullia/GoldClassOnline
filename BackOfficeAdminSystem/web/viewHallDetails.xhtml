@@ -15,11 +15,17 @@
             <p:menuitem value="Cinema Details" url="viewCinemaDetails.xhtml" />
             <p:menuitem value="Hall Details" url="viewHallDetails.xhtml" />
         </p:breadCrumb>   
-        
+
         <p:breadCrumb rendered="#{sessionScope['accountType'] eq 'cinemaStaff'}">
             <p:menuitem value="Cinema Details" url="staffMainPage.xhtml" />
             <p:menuitem value="Hall Details" url="viewHallDetails.xhtml" />
         </p:breadCrumb>
+
+        <style>
+            .ui-datatable-data {
+                text-align: center;
+            }
+        </style>
 
         <h3 align="center">#{hallDetailsManagedBean.hallEntityToView.name}</h3>
 
@@ -33,9 +39,9 @@
                 </c:forEach>
             </p:panelGrid>    
         </div>       
-        <h4 align="center">Capacity: #{hallDetailsManagedBean.hallEntityToView.row} x #{hallDetailsManagedBean.hallEntityToView.col}</h4>
 
-        <h:form>
+        <br/>
+        <h:form rendered="#{sessionScope['accountType'] eq 'cinemaStaff'}">
             <p:menubar>
                 <p:submenu label="Add New Screening Schedule" icon="ui-icon-document">
                     <p:menuitem value="Screening Schedule" onclick="PF('dialogCreateNewSS').show()" icon="ui-icon-plusthick" />
@@ -72,7 +78,7 @@
                 </p:column>
 
 
-                <p:column headerText="Action" >
+                <p:column headerText="Action" rendered="#{sessionScope['accountType'] eq 'cinemaStaff'}">
                     <p:commandButton update="formUpdateSS" oncomplete="PF('dialogUpdateSS').show()" icon="ui-icon-pencil" title="Update">
                         <f:setPropertyActionListener value="#{ssEntity}" target="#{hallDetailsManagedBean.selectedScheduleToUpdate}" />
                     </p:commandButton>

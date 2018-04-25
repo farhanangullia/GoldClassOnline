@@ -55,7 +55,7 @@ public class MovieManagementManagedBean implements Serializable {
         
             MovieEntity me = movieEntityControllerLocal.createMovieEntity(newMovieEntity);
             movieEntities.add(me);
-            filteredMovieEntities.add(me);
+            filteredMovieEntities = movieEntities;
             newMovieEntity = new MovieEntity();
 
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New movie created successfully (Movie ID: " + me.getId() + ")", null));

@@ -65,7 +65,7 @@ public class CinemaManagementManagedBean implements Serializable {
     public void createNewCinema(ActionEvent event) {
         CinemaEntity ce = cinemaEntityControllerLocal.createCinemaEntity(newCinemaEntity);
         cinemaEntities.add(ce);
-        filteredCinemaEntities.add(ce);
+        filteredCinemaEntities = cinemaEntities;
         newCinemaEntity = new CinemaEntity();
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New cinema created successfully (Product ID: " + ce.getId() + ")", null));     
     }

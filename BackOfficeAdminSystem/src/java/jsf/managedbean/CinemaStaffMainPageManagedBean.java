@@ -91,7 +91,7 @@ public class CinemaStaffMainPageManagedBean implements Serializable {
     public void createNewHall(ActionEvent event) {
         HallEntity he = hallEntityControllerLocal.createHallEntity(newHallEntity, selectedCinemaEntity.getId());
         hallEntities.add(he);
-        filteredHallEntities.add(he);
+        filteredHallEntities = hallEntities;
         newHallEntity = new HallEntity();
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New hall created successfully (Screening Schedule ID: " + he.getId() + ")", null));     
     }

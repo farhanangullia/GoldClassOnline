@@ -64,8 +64,8 @@
 
 
                     <p:column headerText="Action" >
-                        <p:commandButton update="formViewCinema" oncomplete="PF('dialogViewCinema').show()" icon="ui-icon-document" title="View">
-                            <f:setPropertyActionListener value="#{cinemaEntity}" target="#{cinemaManagementManagedBean.selectedCinemaEntityToView}" />
+                        <p:commandButton icon="ui-icon-document" actionListener="#{cinemaManagementManagedBean.viewCinemaDetails}" update="formAllCinemas:dataTableAllCinemas formAllCinemas:messages">
+                            <f:attribute name="cinemaId" value="#{cinemaEntity.id}" />
                         </p:commandButton>
                         <p:commandButton update="formUpdateCinema" oncomplete="PF('dialogUpdateCinema').show()" icon="ui-icon-pencil" title="Update">
                             <f:setPropertyActionListener value="#{cinemaEntity}" target="#{cinemaManagementManagedBean.selectedCinemaEntityToUpdate}" />
@@ -135,23 +135,6 @@
                                 <p:commandButton value="Create New Cinema" update="@form formAllCinemas:dataTableAllCinemas" actionListener="#{cinemaManagementManagedBean.createNewCinema}" oncomplete="PF('dialogCreateNewCinema').show();" />
                             </p:column>
                         </p:row>
-
-                    </p:panelGrid>
-
-                </p:dialog>
-
-            </h:form>
-
-            <h:form id="formViewCinema">
-
-                <p:dialog id="dialogViewCinema" widgetVar="dialogViewCinema" header="View Cinema" closable="true">
-
-                    <p:panelGrid>
-
-                        <p:commandButton icon="ui-icon-document" title="View" actionListener="#{cinemaManagementManagedBean.viewCinemaDetails}">
-                            <f:attribute name="cinemaId" value="#{cinemaManagementManagedBean.selectedCinemaEntityToView.id}"/>
-                        </p:commandButton>
-
 
                     </p:panelGrid>
 

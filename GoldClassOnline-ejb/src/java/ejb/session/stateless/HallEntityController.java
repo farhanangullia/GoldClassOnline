@@ -24,26 +24,6 @@ public class HallEntityController implements HallEntityControllerLocal {
     @PersistenceContext(unitName = "GoldClassOnline-ejbPU")
     private EntityManager em;
 
-//    @Override
-//    public HallEntity createHallEntity(HallEntity hallEntity, Long cinemaEntityId) {
-//
-//        CinemaEntity cinemaEntity = em.find(CinemaEntity.class, cinemaEntityId);
-//        hallEntity.setCinemaEntity(cinemaEntity);
-//        em.persist(hallEntity);
-//        cinemaEntity.getHalls().add(hallEntity);
-//        em.flush();
-//        em.refresh(hallEntity);
-//
-//        char[][] seating = new char[hallEntity.getRow()][hallEntity.getCol()];
-//        for (int i = 0; i < hallEntity.getRow(); i++) {
-//            for (int j = 0; j < hallEntity.getCol(); j++) {   
-//                seating[i][j] = 'x';
-//            }
-//        }
-//        hallEntity.setSeating(seating);
-//
-//        return hallEntity;
-//    }
     @Override
     public HallEntity createHallEntity(HallEntity hallEntity, Long cinemaEntityId) {
 
@@ -104,21 +84,6 @@ public class HallEntityController implements HallEntityControllerLocal {
         }
         he.setSeating(seating);
     }
-
-//    @Override
-//    public void updateHallEntity(HallEntity hallEntity) {
-//        HallEntity he = retrieveHallByHallId(hallEntity.getId());
-//        he.setRow(hallEntity.getRow());
-//        he.setCol(hallEntity.getCol());
-//        he.setName(hallEntity.getName());
-//        char[][] seating = new char[hallEntity.getRow()][hallEntity.getCol()];
-//        for (int i = 0; i < hallEntity.getRow(); i++) {
-//            for (int j = 0; j < hallEntity.getCol(); j++) {
-//                seating[i][j] = 'o';
-//            }
-//        }
-//        he.setSeating(seating);
-//    }
     @Override
     public List<HallEntity> retrieveAllHalls(Long cinemaId) {
         Query query = em.createQuery("SELECT h FROM HallEntity h WHERE h.cinemaEntity.id = :inCinemaId AND h.enabled=1");

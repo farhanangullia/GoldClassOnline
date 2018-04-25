@@ -25,6 +25,9 @@ public class TicketEntity implements Serializable {
     private Long id;
     @Column(precision = 11, scale = 2)
     private BigDecimal price;
+    @Column
+    private String seat;
+    
     @ManyToOne(fetch = FetchType.EAGER)
     private ScreeningSchedule screeningSchedule;
     @ManyToOne(fetch = FetchType.EAGER)
@@ -33,8 +36,9 @@ public class TicketEntity implements Serializable {
     public TicketEntity() {
     }
 
-    public TicketEntity(BigDecimal price) {
+    public TicketEntity(BigDecimal price, String seat) {
         this.price = price;
+        this.seat = seat;
     }
 
     
@@ -93,6 +97,20 @@ public class TicketEntity implements Serializable {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    /**
+     * @return the seat
+     */
+    public String getSeat() {
+        return seat;
+    }
+
+    /**
+     * @param seat the seat to set
+     */
+    public void setSeat(String seat) {
+        this.seat = seat;
     }
     
 }

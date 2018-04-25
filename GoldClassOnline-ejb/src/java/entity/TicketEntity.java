@@ -36,9 +36,11 @@ public class TicketEntity implements Serializable {
     public TicketEntity() {
     }
 
-    public TicketEntity(BigDecimal price, String seat) {
+    public TicketEntity(BigDecimal price, String seat, ScreeningSchedule screeningSchedule, CustomerEntity customerEntity) {
         this.price = price;
         this.seat = seat;
+        this.screeningSchedule = screeningSchedule;
+        this.customerEntity = customerEntity;
     }
 
     

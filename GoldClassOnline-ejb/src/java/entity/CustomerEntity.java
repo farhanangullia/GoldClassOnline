@@ -15,8 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlTransient;
 import util.security.CryptographicHelper;
-
 
 @Entity
 public class CustomerEntity implements Serializable {
@@ -37,12 +37,13 @@ public class CustomerEntity implements Serializable {
     private String password;
     @Column(columnDefinition = "CHAR(32)")
     private String salt;
-   /* @OneToMany(mappedBy = "customerEntity", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customerEntity", fetch = FetchType.EAGER)
+    @XmlTransient
     private List<TicketEntity> ticketEntities;
-*/
+
     public CustomerEntity() {
         this.salt = CryptographicHelper.getInstance().generateRandomString(32);
-       // ticketEntities = new ArrayList<>();
+        ticketEntities = new ArrayList<>();
     }
 
     public CustomerEntity(String firstName, String lastName, String age, String username, String password) {
@@ -130,15 +131,17 @@ public class CustomerEntity implements Serializable {
             this.password = null;
         }
     }
-/*
+
+    @XmlTransient
     public List<TicketEntity> getTicketEntities() {
         return ticketEntities;
     }
 
+    @XmlTransient
     public void setTicketEntities(List<TicketEntity> ticketEntities) {
         this.ticketEntities = ticketEntities;
     }
-*/
+
     /**
      * @return the salt
      */

@@ -6,11 +6,13 @@
 package ejb.session.singleton;
 
 import ejb.session.stateless.CinemaEntityControllerLocal;
+import ejb.session.stateless.CustomerEntityControllerLocal;
 import ejb.session.stateless.HallEntityControllerLocal;
 import ejb.session.stateless.MovieEntityControllerLocal;
 import ejb.session.stateless.ScreeningScheduleControllerLocal;
 import ejb.session.stateless.StaffEntityControllerLocal;
 import entity.CinemaEntity;
+import entity.CustomerEntity;
 import entity.HallEntity;
 import entity.MovieEntity;
 import entity.ScreeningSchedule;
@@ -49,13 +51,16 @@ public class DataInitializationSessionBean {
     @EJB
     private StaffEntityControllerLocal staffEntityControllerLocal;
 
+    @EJB
+    private CustomerEntityControllerLocal customerEntityControllerLocal;
+
     public DataInitializationSessionBean() {
     }
 
     @PostConstruct
     public void postConstruct() {
         try {
-            staffEntityControllerLocal.retrieveStaffByUsername("admin");
+            staffEntityControllerLocal.retrieveStaffByUsername("manager");
         } catch (StaffNotFoundException ex) {
             initializeData();
         }
@@ -71,7 +76,7 @@ public class DataInitializationSessionBean {
             
             MovieEntity movieEntity = movieEntityControllerLocal.createMovieEntity(new MovieEntity("Avengers", "Action", "Robert Downey Jr, Chris Evans, Black Panther, Scarlett Johansson", "Russo Brother", 180 , "English", "Avengers assemble to save Earth!", "PG13","../assets/img/avengers.jpg"));
             movieEntity.setEnabled(Boolean.TRUE);
-            MovieEntity movieEntity2 = movieEntityControllerLocal.createMovieEntity(new MovieEntity("Frozen", "Cartoon", "Elsa, Anna", "Kanye West", 120 , "English", "Let it go, let it go!", "PG","../assets/img/frozen.jpg"));
+            MovieEntity movieEntity2 = movieEntityControllerLocal.createMovieEntity(new MovieEntity("Frozen", "Cartoon", "Elsa, Anna", "Kanye West", 120, "English", "Let it go, let it go!", "PG", "../assets/img/frozen.jpg"));
             movieEntity2.setEnabled(Boolean.TRUE);
 
             CinemaEntity cinemaEntity = cinemaEntityControllerLocal.createCinemaEntity(new CinemaEntity("Star Movie", "Kent Ridge Drive", "123456"));
@@ -102,6 +107,7 @@ public class DataInitializationSessionBean {
             Date endTime = calendar.getTime();
             screeningSchedule.setScreeningEndTime(endTime);
 
+            customerEntityControllerLocal.createCustomerEntity(new CustomerEntity("Johnnie", "Walker", "25", "default", "password"));
 
         } catch (Exception ex) {
             System.err.println("********** DataInitializationSessionBean.initializeData(): An error has occurred while loading initial test data: " + ex.getMessage());

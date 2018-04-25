@@ -26,5 +26,7 @@ public interface MovieEntityControllerLocal {
     public MovieEntity retrieveMovieByMovieId(Long movieId);
 
     public void deleteMovie(Long movieId) throws MovieNotFoundException;
+
+    public List<MovieEntity> retrieveAllMovieEntitiesByCinema(Long cinemaId);
     
 }

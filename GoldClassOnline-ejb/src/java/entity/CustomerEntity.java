@@ -17,10 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import util.security.CryptographicHelper;
 
-/**
- *
- * @author KERK
- */
+
 @Entity
 public class CustomerEntity implements Serializable {
 

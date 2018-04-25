@@ -17,7 +17,7 @@ import util.exception.MovieNotFoundException;
 
 /**
  *
- * @author 
+ * @author
  */
 @Stateless
 public class MovieEntityController implements MovieEntityControllerLocal {
@@ -51,7 +51,6 @@ public class MovieEntityController implements MovieEntityControllerLocal {
     public MovieEntity retrieveMovieByMovieId(Long movieId) {
         MovieEntity movieEntity = em.find(MovieEntity.class, movieId);
 
-        
         return movieEntity;
 
     }
@@ -65,6 +64,7 @@ public class MovieEntityController implements MovieEntityControllerLocal {
 
     @Override
     public List<MovieEntity> retrieveAllMovieEntitiesByCinema(Long cinemaId) { //how
+
         Query query = em.createQuery("SELECT m FROM MovieEntity m WHERE m.enabled= 1");
         List<MovieEntity> allMovies = query.getResultList();
         List<MovieEntity> moviesInCinema = new ArrayList<>();

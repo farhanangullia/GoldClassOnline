@@ -32,6 +32,7 @@ public class ApplicationConfig extends Application {
         resources.add(ws.restful.CinemaResource.class);
         resources.add(ws.restful.CustomerResource.class);
         resources.add(ws.restful.MovieResource.class);
+        resources.add(ws.restful.TicketResource.class);
     }
     
 }

@@ -27,7 +27,7 @@ public class HallEntity implements Serializable {
     private String name;
     private Integer row;
     private Integer col;
-    private char [][] seating; 
+    private String [][] seating; 
     private Boolean enabled;
     @ManyToOne(fetch = FetchType.EAGER)
     private CinemaEntity cinemaEntity;
@@ -127,11 +127,19 @@ public class HallEntity implements Serializable {
         this.enabled = enabled;
     }
 
-    public char[][] getSeating() {
+    /**
+     * @return the seating
+     */
+    public String[][] getSeating() {
         return seating;
     }
 
-    public void setSeating(char[][] seating) {
+    /**
+     * @param seating the seating to set
+     */
+    public void setSeating(String[][] seating) {
         this.seating = seating;
     }
+
+
 }

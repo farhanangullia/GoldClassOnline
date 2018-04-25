@@ -29,83 +29,112 @@ import util.exception.StaffNotFoundException;
 
 /**
  *
- * @author 
+ * @author
  */
 @Singleton
 @LocalBean
 @Startup
 public class DataInitializationSessionBean {
-
+    
     @EJB
     private ScreeningScheduleControllerLocal screeningScheduleControllerLocal;
-
+    
     @EJB
     private HallEntityControllerLocal hallEntityControllerLocal;
-
+    
     @EJB
     private CinemaEntityControllerLocal cinemaEntityControllerLocal;
-
+    
     @EJB
     private MovieEntityControllerLocal movieEntityControllerLocal;
-
+    
     @EJB
     private StaffEntityControllerLocal staffEntityControllerLocal;
-
+    
     @EJB
     private CustomerEntityControllerLocal customerEntityControllerLocal;
-
+    
     public DataInitializationSessionBean() {
     }
-
+    
     @PostConstruct
     public void postConstruct() {
         try {
+            
+            int iAsciiValue2 = 65; // Currently just the number 9, but we want Tab character
+            // Put the tab character into a string
+            char row;
+            char col;
+            
+            String[][] seating = new String[6][6];
+            for (int i = 0; i < 6; i++) {
+                for (int j = 0; j < 6; j++) {                    
+                    row = (char) (i + 65);
+                    col = (char) (j + 49);
+                    seating[i][j] = "" + row + col;
+                    System.out.print(seating[i][j] + " ");
+                }
+                //System.out.println();
+            }
+
+            //  System.out.println(seating[0][0]);
             staffEntityControllerLocal.retrieveStaffByUsername("manager");
         } catch (StaffNotFoundException ex) {
             initializeData();
         }
-
+        
     }
-
+    
     private void initializeData() {
         try {
-
-            StaffEntity admin = staffEntityControllerLocal.createStaffEntity(new StaffEntity("Admin", "Manager", AccessRightEnum.ADMIN, "manager", "password"));
-            StaffEntity cinemaStaff = staffEntityControllerLocal.createStaffEntity(new StaffEntity("Cinema", "Staff", AccessRightEnum.CINEMASTAFF, "staff", "password"));
- 
             
-            MovieEntity movieEntity = movieEntityControllerLocal.createMovieEntity(new MovieEntity("Avengers", "Action", "Robert Downey Jr, Chris Evans, Black Panther, Scarlett Johansson", "Russo Brother", 180 , "English", "Avengers assemble to save Earth!", "PG13","../assets/img/avengers.jpg"));
+            StaffEntity admin = staffEntityControllerLocal.createStaffEntity(new StaffEntity("Admin", "Manager", AccessRightEnum.ADMIN, "manager", "password"));
+            StaffEntity cinemaStaff = staffEntityControllerLocal.createStaffEntity(new StaffEntity("Cinema", "Staff", AccessRightEnum.CINEMASTAFF, "cinemastaff", "password"));
+            StaffEntity cinemaStaff2 = staffEntityControllerLocal.createStaffEntity(new StaffEntity("Cinema", "Staff", AccessRightEnum.CINEMASTAFF, "staff", "password"));
+            
+            MovieEntity movieEntity = movieEntityControllerLocal.createMovieEntity(new MovieEntity("Avengers", "Action", "Robert Downey Jr, Chris Evans, Black Panther, Scarlett Johansson", "Russo Brother", 180, "English", "Avengers assemble to save Earth!", "PG13", "../assets/img/avengers.jpg"));
             movieEntity.setEnabled(Boolean.TRUE);
             MovieEntity movieEntity2 = movieEntityControllerLocal.createMovieEntity(new MovieEntity("Frozen", "Cartoon", "Elsa, Anna", "Kanye West", 120, "English", "Let it go, let it go!", "PG", "../assets/img/frozen.jpg"));
             movieEntity2.setEnabled(Boolean.TRUE);
-
+            
             CinemaEntity cinemaEntity = cinemaEntityControllerLocal.createCinemaEntity(new CinemaEntity("Star Movie", "Kent Ridge Drive", "123456"));
             cinemaEntity.setEnabled(Boolean.TRUE);
             CinemaEntity cinemaEntity2 = cinemaEntityControllerLocal.createCinemaEntity(new CinemaEntity("Best Movie", "313 Orchard", "111313"));
-            cinemaEntity2.setEnabled(Boolean.TRUE);
-            
+
             HallEntity hallEntity = hallEntityControllerLocal.createHallEntity(new HallEntity("Premium", 5, 6), cinemaEntity.getId());
             hallEntity.setEnabled(Boolean.TRUE);
-            char[][] seating = new char[hallEntity.getRow()][hallEntity.getCol()];
+            
+            String[][] seating = new String[hallEntity.getRow()][hallEntity.getCol()];
+            char row, col;
             for (int i = 0; i < hallEntity.getRow(); i++) {
-                for (int j = 0; j < hallEntity.getCol(); j++) {
-                    seating[i][j] = 'o';
+                for (int j = 0; j < hallEntity.getCol(); j++) {                    
+                    row = (char) (i + 65);
+                    col = (char) (j + 49);
+                    seating[i][j] = "" + row + col;
                 }
             }
-            hallEntity.setSeating(seating);
             
+            hallEntity.setSeating(seating);
+
+//            char[][] seating = new char[hallEntity.getRow()][hallEntity.getCol()];
+//            for (int i = 0; i < hallEntity.getRow(); i++) {
+//                for (int j = 0; j < hallEntity.getCol(); j++) {
+//                    seating[i][j] = 'o';
+//                }
+//            }
+//            hallEntity.setSeating(seating);
             Date calendarStart = new Date(118, 5, 12, 14, 0);
-               
+            
             ScreeningSchedule screeningSchedule = screeningScheduleControllerLocal.createScreeningSchedule(new ScreeningSchedule(calendarStart), movieEntity, hallEntity.getId());
             screeningSchedule.setEnabled(Boolean.TRUE);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(screeningSchedule.getScreeningTime());
-            calendar.add(Calendar.MINUTE, movieEntity.getRunningTime());       
+            calendar.add(Calendar.MINUTE, movieEntity.getRunningTime());
             Date endTime = calendar.getTime();
             screeningSchedule.setScreeningEndTime(endTime);
-
+            
             customerEntityControllerLocal.createCustomerEntity(new CustomerEntity("Johnnie", "Walker", "25", "default", "password"));
-
+            
         } catch (Exception ex) {
             System.err.println("********** DataInitializationSessionBean.initializeData(): An error has occurred while loading initial test data: " + ex.getMessage());
         }

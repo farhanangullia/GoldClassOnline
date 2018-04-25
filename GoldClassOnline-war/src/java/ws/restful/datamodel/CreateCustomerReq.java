@@ -14,10 +14,10 @@ import javax.xml.bind.annotation.XmlType;
  * @author Farhan Angullia
  */
 
-@XmlRootElement
-@XmlType(name = "createCustomerReq", propOrder = {
-    "customerEntity"
-})
+//@XmlRootElement
+//@XmlType(name = "createCustomerReq", propOrder = {
+//    "customerEntity"
+//})
 public class CreateCustomerReq {
     private CustomerEntity customerEntity;
 

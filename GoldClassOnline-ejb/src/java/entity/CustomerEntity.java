@@ -37,12 +37,12 @@ public class CustomerEntity implements Serializable {
     private String password;
     @Column(columnDefinition = "CHAR(32)")
     private String salt;
-    @OneToMany(mappedBy = "customerEntity", fetch = FetchType.EAGER)
+   /* @OneToMany(mappedBy = "customerEntity", fetch = FetchType.EAGER)
     private List<TicketEntity> ticketEntities;
-
+*/
     public CustomerEntity() {
         this.salt = CryptographicHelper.getInstance().generateRandomString(32);
-        ticketEntities = new ArrayList<>();
+       // ticketEntities = new ArrayList<>();
     }
 
     public CustomerEntity(String firstName, String lastName, String age, String username, String password) {
@@ -130,7 +130,7 @@ public class CustomerEntity implements Serializable {
             this.password = null;
         }
     }
-
+/*
     public List<TicketEntity> getTicketEntities() {
         return ticketEntities;
     }
@@ -138,7 +138,7 @@ public class CustomerEntity implements Serializable {
     public void setTicketEntities(List<TicketEntity> ticketEntities) {
         this.ticketEntities = ticketEntities;
     }
-
+*/
     /**
      * @return the salt
      */

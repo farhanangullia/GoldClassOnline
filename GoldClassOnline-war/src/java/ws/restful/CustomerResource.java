@@ -61,8 +61,7 @@ public class CustomerResource {
             customer.setPassword(null);       //for security purposes on client side
             customer.setSalt(null);
 
-            customer.getTicketEntities().clear();
-
+            //  customer.getTicketEntities().clear();
             return Response.status(Response.Status.OK).entity(new GetCustomerRsp(customer)).build();
         } catch (InvalidLoginCredentialException ex) {
             ErrorRsp errorRsp = new ErrorRsp(ex.getMessage());
@@ -75,12 +74,12 @@ public class CustomerResource {
         }
     }
 
-
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createCustomer(JAXBElement<CreateCustomerReq> jaxbCreateCustomerReq) {
         System.out.println("DEBUG CUSTOMER");
+
         if ((jaxbCreateCustomerReq != null) && (jaxbCreateCustomerReq.getValue() != null)) {
             try {
                 System.out.println("HERE");

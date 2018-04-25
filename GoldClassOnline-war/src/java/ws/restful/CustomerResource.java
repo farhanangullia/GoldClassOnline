@@ -80,13 +80,13 @@ public class CustomerResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createCustomer(JAXBElement<CreateCustomerReq> jaxbCreateCustomerReq) {
-        System.out.println("HERE asdsad");
+        System.out.println("DEBUG CUSTOMER");
         if ((jaxbCreateCustomerReq != null) && (jaxbCreateCustomerReq.getValue() != null)) {
             try {
                 System.out.println("HERE");
 
                 CreateCustomerReq createCustomerReq = jaxbCreateCustomerReq.getValue();
-                System.out.println("HERE E E");
+                System.out.println("HERE 1");
                 Long id = customerEntityControllerLocal.createCustomerEntity(createCustomerReq.getCustomerEntity());
                 System.out.println("HERE 2");
                 CreateCustomerRsp createCustomerRsp = new CreateCustomerRsp(id);

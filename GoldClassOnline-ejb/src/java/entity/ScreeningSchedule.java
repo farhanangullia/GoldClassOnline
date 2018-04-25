@@ -19,10 +19,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-/**
- *
- * @author KERK
- */
+
 @Entity
 public class ScreeningSchedule implements Serializable {
 

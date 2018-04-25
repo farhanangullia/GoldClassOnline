@@ -16,10 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-/**
- *
- * @author KERK
- */
+
 @Entity
 public class HallEntity implements Serializable {
 

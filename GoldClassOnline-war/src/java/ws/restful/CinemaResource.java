@@ -7,20 +7,22 @@ package ws.restful;
 
 import ejb.session.stateless.CinemaEntityControllerLocal;
 import entity.CinemaEntity;
-import entity.HallEntity;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import ws.restful.datamodel.ErrorRsp;
+import ws.restful.datamodel.RetrieveAllCinemasByMovieRsp;
 import ws.restful.datamodel.RetrieveAllCinemasRsp;
 
 /**
@@ -46,11 +48,9 @@ public class CinemaResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveAllCinemas() {
-        System.out.println("YA 1");
+
         try {
             List<CinemaEntity> cinemaEntities = cinemaEntityControllerLocal.retrieveAllCinemaEntities();
-
-            System.out.println("YA");
 
             for (CinemaEntity cinemaEntity : cinemaEntities) {
                 cinemaEntity.getHalls().clear();
@@ -63,6 +63,32 @@ public class CinemaResource {
             return Response.status(Response.Status.OK).entity(retrieveAllCinemasRsp).build();
         } catch (Exception ex) {
             ErrorRsp errorRsp = new ErrorRsp(ex.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorRsp).build();
+        }
+    }
+
+    @Path("retrieveAllCinemasByMovie/{movieId}")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveAllCinemasByMovie(@PathParam("movieId") Long movieId) {
+        try {
+
+            List<CinemaEntity> cinemaEntities = cinemaEntityControllerLocal.retrieveAllCinemaEntitiesByMovie(movieId);
+
+            for (CinemaEntity cinemaEntity : cinemaEntities) {
+                cinemaEntity.getHalls().clear();
+                cinemaEntity.getStaffEntities().clear();
+
+            }
+
+            RetrieveAllCinemasByMovieRsp retrieveAllCinemasByMovieRsp = new RetrieveAllCinemasByMovieRsp(cinemaEntities);
+
+            return Response.status(Response.Status.OK).entity(retrieveAllCinemasByMovieRsp).build();
+
+        } catch (Exception ex) {
+            ErrorRsp errorRsp = new ErrorRsp(ex.getMessage());
+
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorRsp).build();
         }
     }

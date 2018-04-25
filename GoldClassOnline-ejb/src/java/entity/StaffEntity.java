@@ -18,10 +18,7 @@ import javax.persistence.ManyToOne;
 import util.enumeration.AccessRightEnum;
 import util.security.CryptographicHelper;
 
-/**
- *
- * @author KERK
- */
+
 @Entity
 public class StaffEntity implements Serializable {
 

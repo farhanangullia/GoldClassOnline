@@ -5,10 +5,7 @@
  */
 package util.enumeration;
 
-/**
- *
- * @author KERK
- */
+
 public enum AccessRightEnum {  
     ADMIN,
     CINEMASTAFF

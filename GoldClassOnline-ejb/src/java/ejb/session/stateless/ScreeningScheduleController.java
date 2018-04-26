@@ -26,6 +26,9 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
 
     @EJB
     private HallEntityControllerLocal hallEntityControllerLocal;
+    
+    @EJB
+    private EJBTimerSessionBeanLocal ejbTimerSessionBeanLocal;
 
     @PersistenceContext(unitName = "GoldClassOnline-ejbPU")
     private EntityManager em;
@@ -45,6 +48,7 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(screeningSchedule.getScreeningTime());
         calendar.add(Calendar.MINUTE, movieEntity.getRunningTime());
+        calendar.add(Calendar.MINUTE, 20); //buffer for cleaning up the hall
         
         Date endTime = calendar.getTime();
         screeningSchedule.setScreeningEndTime(endTime);
@@ -52,6 +56,7 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
         em.persist(screeningSchedule);
         em.flush();
         em.refresh(screeningSchedule);
+        ejbTimerSessionBeanLocal.createTimer(screeningSchedule);
 
         return screeningSchedule;
     }
@@ -66,8 +71,10 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(ss.getScreeningTime());
         calendar.add(Calendar.MINUTE, movieEntity.getRunningTime());
+        calendar.add(Calendar.MINUTE, 20); //buffer for cleaning up the hall
         Date endTime = calendar.getTime();
         ss.setScreeningEndTime(endTime);
+        ejbTimerSessionBeanLocal.createTimer(ss);
  
     }
 

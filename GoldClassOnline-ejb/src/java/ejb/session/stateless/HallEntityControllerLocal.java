@@ -31,5 +31,9 @@ public interface HallEntityControllerLocal {
     public List<HallEntity> retrieveAllHallsForCinemaStaff();
 
     public void updateHallEntityWithCinemaEntity(HallEntity hallEntity, CinemaEntity cinemaEntity);
+
+    public void updateHallHandicapSeats(HallEntity hallEntity, List<String> handicapSeats);
+
+    public void updateHallDisabledSeats(HallEntity hallEntity, List<String> disabledSeats);
     
 }

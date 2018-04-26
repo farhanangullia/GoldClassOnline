@@ -92,4 +92,16 @@ public class MovieEntityController implements MovieEntityControllerLocal {
             throw new MovieNotFoundException("Id not provided for Movie to be deleted");
         }
     }
+
+    @Override
+    public MovieEntity retrieveMovieByTitle(String title) {
+        Query query = em.createQuery("SELECT m FROM MovieEntity m WHERE m.title = :inTitle");
+        query.setParameter("inTitle", title);
+
+        MovieEntity movie = (MovieEntity) query.getSingleResult();
+
+        return movie;
+
+    }
+
 }

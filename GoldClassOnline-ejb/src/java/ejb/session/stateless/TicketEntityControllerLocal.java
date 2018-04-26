@@ -6,7 +6,11 @@
 package ejb.session.stateless;
 
 import entity.TicketEntity;
+import java.util.List;
 import javax.ejb.Local;
+import util.exception.CustomerNotFoundException;
+import util.exception.PurchaseTicketException;
+import ws.restful.datamodel.RemoteCheckoutLineItem;
 
 /**
  *
@@ -18,5 +22,11 @@ public interface TicketEntityControllerLocal {
     public TicketEntity createTicketEntity(TicketEntity ticketEntity);
 
     public void updateTicketEntity(TicketEntity ticketEntity);
+
+    public List<TicketEntity> buyTicketsFromRemoteCheckoutRequest(String username, List<RemoteCheckoutLineItem> remoteCheckoutLineItems) throws PurchaseTicketException;
+
+    public List<TicketEntity> retrieveAllTicketsByCustomer(Long id) throws CustomerNotFoundException;
+
+    public List<TicketEntity> retrieveAllTicketsByScreeningSchedule(Long id);
     
 }

@@ -35,5 +35,9 @@ public interface HallEntityControllerLocal {
     public void updateHallHandicapSeats(HallEntity hallEntity, List<String> handicapSeats);
 
     public void updateHallDisabledSeats(HallEntity hallEntity, List<String> disabledSeats);
+
+    public void removeHallDisabledSeats(HallEntity hallEntity, List<String> handicapSeats);
+
+    public void removeHallHandicapSeats(HallEntity hallEntity, List<String> handicapSeats);
     
 }

@@ -29,16 +29,53 @@
 
         <h3 align="center">#{hallDetailsManagedBean.hallEntityToView.name}</h3>
 
+         
         <div align="center">
+            <h:form id="layout">
             <h4>Seat Layout:</h4>
-            <p:panelGrid columns="#{hallDetailsManagedBean.hallEntityToView.col}">
+            <p:panelGrid id="table" columns="#{hallDetailsManagedBean.hallEntityToView.col}">
                 <c:forEach var="row" items="#{hallDetailsManagedBean.hallEntityToView.seating}">
                     <c:forEach var="value" items="#{row}">
                         #{value}
                     </c:forEach>
                 </c:forEach>
-            </p:panelGrid>    
-        </div>       
+            </p:panelGrid>     
+        
+            <br/>
+            <p:panelGrid columns="2">
+                <f:facet name="header">
+                    <h:outputText value ="Legend "/>
+                </f:facet>
+
+                <h:outputText value="X:" />
+                <h:outputText value="Disabled Seats" />
+
+                <h:outputText value="(H):"/>
+                <h:outputText value="Handicap Seats"/>
+
+            </p:panelGrid>
+            </h:form>
+            <br/>
+
+            <p:column headerText="Action" rendered="#{sessionScope['accountType'] eq 'cinemaStaff'}">
+                <p:commandButton update="layout" oncomplete="PF('dialogUpdateHandicap').show()" title="Add Handicap Seats">
+                    <f:setPropertyActionListener value="#{hallEntity}" target="#{hallDetailsManagedBean.hallEntityToUpdate}" />
+                </p:commandButton>&nbsp;
+                 <p:commandButton update="layout" oncomplete="PF('dialogRemoveHandicap').show()" title="Remove Handicap Seats">
+                    <f:setPropertyActionListener value="#{hallEntity}" target="#{hallDetailsManagedBean.hallEntityToUpdate}" />
+                </p:commandButton>           
+                <br/><br/>
+                <p:commandButton update="layout" oncomplete="PF('dialogUpdateDisabled').show()" title="Add Disabled Seats">
+                    <f:setPropertyActionListener value="#{hallEntity}" target="#{hallDetailsManagedBean.hallEntityToUpdate}" />
+                </p:commandButton>&nbsp;
+                <p:commandButton update="layout" oncomplete="PF('dialogRemoveDisabled').show()" title="Remove Disabled Seats">
+                    <f:setPropertyActionListener value="#{hallEntity}" target="#{hallDetailsManagedBean.hallEntityToUpdate}" />
+                </p:commandButton>
+            </p:column>
+
+
+        </div>
+
 
         <br/>
         <h:form rendered="#{sessionScope['accountType'] eq 'cinemaStaff'}">
@@ -96,9 +133,10 @@
             </p:confirmDialog>
 
         </h:form>
-
+        
+        
+        
         <h:form id="formCreateNewSS">
-
             <p:dialog id="dialogCreateSS" widgetVar="dialogCreateNewSS" header="Create New Screening Schedule" closable="true">
 
                 <p:messages id="messagesCreateSS" redisplay="false" />
@@ -124,7 +162,8 @@
                             <p:outputLabel for="time" value="Screening Time: " />
                         </p:column>
                         <p:column>
-                            <p:calendar id ="time" pattern="dd/MM/yyyy HH:mm" timeOnly="false" value="#{hallDetailsManagedBean.newScreeningSchedule.screeningTime}" required="true" requiredMessage="Screen Date is required" />                                            
+                            <p:calendar id ="time" pattern="dd/MM/yyyy HH:mm" timeOnly="false" value="#{hallDetailsManagedBean.newScreeningSchedule.screeningTime}" mindate="#{hallDetailsManagedBean.currentDate}" required="true" requiredMessage="Screen Date is required" />                                            
+                            
                         </p:column>
                         <p:message for="time" />
                     </p:row>
@@ -132,7 +171,7 @@
                     <p:row>
                         <p:column colspan="3">
                             <p:commandButton type="reset" value="Clear" />&nbsp;
-                            <p:commandButton value="Create New Screening Schedule" update="@form formAllSS:dataTableAllSS" actionListener="#{hallDetailsManagedBean.createNewScreeningSchedule}" oncomplete="PF('dialogCreateNewSS').show();" />
+                            <p:commandButton value="Create New Screening Schedule" update="@form formAllSS:dataTableAllSS" actionListener="#{hallDetailsManagedBean.createNewScreeningSchedule}" oncomplete="PF('dialogCreateNewSS').hide();" />
                         </p:column>
                     </p:row>
 
@@ -143,22 +182,11 @@
         </h:form>
 
         <h:form id="formUpdateSS">
-
             <p:dialog id="dialogUpdateSS" widgetVar="dialogUpdateSS" header="Update Screening Schedule" closable="true">
 
                 <p:messages id="messagesUpdateSS" redisplay="false" />
 
                 <p:panelGrid>
-                    <p:row>
-                        <p:column>
-                            <p:outputLabel for="date" value="Date Time: " />
-                        </p:column>
-                        <p:column>
-                            <p:calendar id ="date" pattern="dd/MM/yyyy HH:mm" timeOnly="false" value="#{hallDetailsManagedBean.selectedScheduleToUpdate.screeningTime}" required="true" requiredMessage="Screen Date is required" />                                            
-                        </p:column>
-                        <p:message for="date" />
-                    </p:row>
-
                     <p:row>
                         <p:column>
                             <p:outputLabel for="upDatemovie" value="Movie: " />
@@ -171,10 +199,22 @@
                         </p:column>
                         <p:message for="upDatemovie" />
                     </p:row>
+                
+                
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="date" value="Date Time: " />
+                        </p:column>
+                        <p:column>
+                            <p:calendar id ="date" pattern="dd/MM/yyyy HH:mm" timeOnly="false" value="#{hallDetailsManagedBean.selectedScheduleToUpdate.screeningTime}" mindate="#{hallDetailsManagedBean.currentDate}" required="true" requiredMessage="Screen Date is required" />                                            
+        
+                        </p:column>
+                        <p:message for="date" />
+                    </p:row>
 
                     <p:row>
                         <p:column colspan="3">
-                            <p:commandButton value="Update Screening Schedule" update="@form formAllSS:dataTableAllSS" actionListener="#{hallDetailsManagedBean.updateScreeningSchedule}" oncomplete="PF('dialogUpdateSS').show();" />
+                            <p:commandButton value="Update Screening Schedule" update="@form formAllSS:dataTableAllSS" actionListener="#{hallDetailsManagedBean.updateScreeningSchedule}" oncomplete="PF('dialogUpdateSS').hide();" />
                         </p:column>
                     </p:row>
 
@@ -182,6 +222,135 @@
 
             </p:dialog>
 
+        </h:form>
+        
+        <h:form id="formUpdateDisabled">
+
+            <p:dialog id="dialogUpdateDisabled" widgetVar="dialogUpdateDisabled" header="Update Disabled Seating" closable="true">
+
+                <p:messages id="messagesUpdateDisabled" redisplay="false" />
+
+                <p:panelGrid>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="seatNumberDisabled" value="Select Seat(s): " />
+                        </p:column>
+                        <p:column>
+                            <p:selectCheckboxMenu id="seatNumberDisabled" value="#{hallDetailsManagedBean.selectedDisabled}" required="true" requiredMessage="Hall Seats is required" label="disabledSeats" multiple="true" panelStyle="width:250px">
+                                <f:selectItems id="seatNumDisabled" var="row" value="#{hallDetailsManagedBean.hallEntityToView.seatsInArray()}">
+                                </f:selectItems>
+                            </p:selectCheckboxMenu>
+
+                        </p:column>
+                        <p:message for="seatNumberDisabled" />
+                    </p:row>
+
+                    <p:row>
+                        <p:column colspan="3">
+                            <p:commandButton value="Update Disabled Seating" actionListener="#{hallDetailsManagedBean.updateDisabledSeats}" update="@all"  oncomplete="PF('dialogUpdateDisabled').hide();" />
+                        </p:column>
+                    </p:row>
+
+                </p:panelGrid>
+
+            </p:dialog>
+
+        </h:form>
+        
+         <h:form id="formUpdateHandicap">
+
+            <p:dialog id="dialogUpdateHandicap" widgetVar="dialogUpdateHandicap" header="Update Handicap Seating" closable="true">
+
+                <p:messages id="messagesUpdateHandicap" redisplay="false" />
+
+                <p:panelGrid>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="seatNumberHandicap" value="Select Seat(s): " />
+                        </p:column>
+                        <p:column>
+                            <p:selectCheckboxMenu id="seatNumberHandicap" value="#{hallDetailsManagedBean.selectedHandicap}" required="true" requiredMessage="Hall Seats is required" label="handicapSeats" multiple="true" panelStyle="width:250px">
+                                <f:selectItems id="seatNumHandicap" value="#{hallDetailsManagedBean.hallEntityToView.seatsInArray()}">
+                                </f:selectItems>
+                            </p:selectCheckboxMenu>
+
+                        </p:column>
+                        <p:message for="seatNumberHandicap" />
+                    </p:row>
+
+                    <p:row>
+                        <p:column colspan="3">
+                            <p:commandButton value="Update Handicap Seating" actionListener="#{hallDetailsManagedBean.updateHandicapSeats}" update="@all"  oncomplete="PF('dialogUpdateHandicap').hide();" />
+                        </p:column>
+                    </p:row>
+
+                </p:panelGrid>
+
+            </p:dialog>
+
+        </h:form>
+
+        <h:form id="formRemoveDisabled">
+
+            <p:dialog id="dialogRemoveDisabled" widgetVar="dialogRemoveDisabled" header="Remove Disabled Seating" closable="true">
+
+                <p:messages id="messagesRemoveDisabled" redisplay="false" />
+
+                <p:panelGrid>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="seatNumberDisabledRemove" value="Select Seat(s): " />
+                        </p:column>
+                        <p:column>
+                            <p:selectCheckboxMenu id="seatNumberDisabledRemove" value="#{hallDetailsManagedBean.selectedDisabledToRemove}" required="true" requiredMessage="Hall Seats is required" label="removeDisabledSeats" multiple="true" panelStyle="width:250px">
+                                <f:selectItems id="seatNumDisabledRemove" value="#{hallDetailsManagedBean.hallEntityToView.currentDisabledSeats()}" />
+                            </p:selectCheckboxMenu>
+                        </p:column>
+                        <p:message for="seatNumberDisabledRemove" />
+                    </p:row>
+
+                    <p:row>
+                        <p:column colspan="3">
+                            <p:commandButton value="Update Disabled Seating" actionListener="#{hallDetailsManagedBean.deleteDisabledSeats}" update="@all" oncomplete="PF('dialogRemoveDisabled').hide();" />
+                        </p:column>
+                    </p:row>
+
+                </p:panelGrid>
+
+            </p:dialog>
+
+        </h:form>
+        
+        <h:form id="formRemoveHandicap">
+
+            <p:dialog id="dialogRemoveHandicap" widgetVar="dialogRemoveHandicap" header="Remove Handicap Seating" closable="true">
+
+                <p:messages id="messagesRemoveHandicap" redisplay="false" />
+
+                <p:panelGrid>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="seatNumberHandicapRemove" value="Select Seat(s): " />
+                        </p:column>
+                        <p:column>
+                            <p:selectCheckboxMenu id="seatNumberHandicapRemove" value="#{hallDetailsManagedBean.selectedHandicapToRemove}" required="true" requiredMessage="Hall Seats is required" label="removeHandicapSeats" multiple="true">
+                                <f:selectItems id="seatNumHandiCap" value="#{hallDetailsManagedBean.hallEntityToView.currentHandicapSeats()}" />
+                            </p:selectCheckboxMenu>
+                        </p:column>
+                        <p:message for="seatNumberHandicapRemove" />
+                    </p:row>
+
+                    <p:row>
+                        <p:column colspan="3">
+                            <p:commandButton value="Update Handicap Seating" actionListener="#{hallDetailsManagedBean.deleteHandicapSeats}" update="@all"  oncomplete="PF('dialogRemoveHandicap').hide();" />
+                        </p:column>
+                    </p:row>
+
+                </p:panelGrid>
+
+            </p:dialog>
         </h:form>
 
 

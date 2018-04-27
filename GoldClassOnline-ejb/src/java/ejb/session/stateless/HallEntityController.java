@@ -68,6 +68,7 @@ public class HallEntityController implements HallEntityControllerLocal {
 
     @Override
     public void updateHallHandicapSeats(HallEntity hallEntity, List<String> handicapSeats) {
+        
         HallEntity he = retrieveHallByHallId(hallEntity.getId());
 
         String[][] seating = he.getSeating();
@@ -75,12 +76,31 @@ public class HallEntityController implements HallEntityControllerLocal {
         for (int i = 0; i < he.getRow(); i++) {
             for (int j = 0; j < he.getCol(); j++) {
                 if (handicapSeats.contains(seating[i][j])) {
-                    seating[i][j] = "Handicap" + seating[i][j];
+                    seating[i][j] = "(H)" + seating[i][j];
                 }
             }
         }
         he.setSeating(seating);
     }
+    
+    @Override
+    public void removeHallHandicapSeats(HallEntity hallEntity, List<String> handicapSeats) {
+        
+        HallEntity he = retrieveHallByHallId(hallEntity.getId());
+
+        String[][] seating = he.getSeating();
+
+        for (int i = 0; i < he.getRow(); i++) {
+            for (int j = 0; j < he.getCol(); j++) {
+                if (handicapSeats.contains(seating[i][j])) {
+                    seating[i][j] = seating[i][j].replace("(H)", "");
+                }
+            }
+        }
+        he.setSeating(seating);
+    }
+    
+    
 
     @Override
     public void updateHallDisabledSeats(HallEntity hallEntity, List<String> disabledSeats) {
@@ -94,6 +114,22 @@ public class HallEntityController implements HallEntityControllerLocal {
                     seating[i][j] = "X";
                 }
             }
+        }
+        he.setSeating(seating);
+    }
+    
+    @Override
+    public void removeHallDisabledSeats(HallEntity hallEntity, List<String> handicapSeats) {
+        
+        HallEntity he = retrieveHallByHallId(hallEntity.getId());
+
+        String[][] seating = he.getSeating();
+        for (int i = 0; i < handicapSeats.size(); i++) {
+            char rowChar = handicapSeats.get(i).charAt(0);
+            int row = ((int) rowChar) - 65;
+            char colChar = handicapSeats.get(i).charAt(1);
+            int col = Character.getNumericValue(colChar);
+            seating[row][col-1] = "" + rowChar + col;
         }
         he.setSeating(seating);
     }

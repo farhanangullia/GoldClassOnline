@@ -13,6 +13,7 @@ import entity.MovieEntity;
 import entity.ScreeningSchedule;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -26,7 +27,7 @@ import javax.faces.view.ViewScoped;
 
 /**
  *
- * @author 
+ * @author
  */
 @Named(value = "hallDetailsManagedBean")
 @ViewScoped
@@ -40,103 +41,161 @@ public class HallDetailsManagedBean implements Serializable {
 
     @EJB
     private HallEntityControllerLocal hallEntityControllerLocal;
-    
+
     private HallEntity hallEntityToView;
     private Long hallEntityToViewId;
+    private HallEntity hallEntityToUpdate;
     private ScreeningSchedule selectedScheduleToUpdate;
-    
+
     private MovieEntity selectedMovieEntity;
     private MovieEntity selectedMovieEntityToUpdate;
-    
+
     private ScreeningSchedule newScreeningSchedule;
-    
+
     private List<ScreeningSchedule> screeningSchedules;
     private List<ScreeningSchedule> filteredScreeningSchedules;
     private List<SelectItem> selectItems;
-    
+
     private List<MovieEntity> movieEntities;
 
-    
+    private List<String> selectedHandicap;
+    private List<String> selectedHandicapToRemove;
+    private List<String> selectedDisabled;
+    private List<String> selectedDisabledToRemove;
+
+    private Date currentDate;
+
     public HallDetailsManagedBean() {
         hallEntityToView = new HallEntity();
+        hallEntityToUpdate = new HallEntity();
         screeningSchedules = new ArrayList<>();
         filteredScreeningSchedules = new ArrayList<>();
-        movieEntities =  new ArrayList<>();
+        movieEntities = new ArrayList<>();
         newScreeningSchedule = new ScreeningSchedule();
         selectItems = new ArrayList<>();
         selectedMovieEntity = new MovieEntity();
         selectedMovieEntityToUpdate = new MovieEntity();
+
+        selectedHandicap = new ArrayList<>();
+        selectedDisabled = new ArrayList<>();
+        selectedHandicapToRemove = new ArrayList<>();
+        selectedDisabledToRemove = new ArrayList<>();
+        currentDate = new Date();
+
     }
-    
+
     @PostConstruct
-    public void postConstruct()
-    {
-        hallEntityToViewId = (Long)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("hallIdToView");
+    public void postConstruct() {
+        hallEntityToViewId = (Long) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("hallIdToView");
         hallEntityToView = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
         screeningSchedules = screeningScheduleControllerLocal.retrieveAllScreeningSchedules(hallEntityToViewId);
         filteredScreeningSchedules = screeningSchedules;
         movieEntities = movieEntityControllerLocal.retrieveAllMovieEntities();
-        for(MovieEntity movieEntity:movieEntities)
-        {
+        for (MovieEntity movieEntity : movieEntities) {
             selectItems.add(new SelectItem(movieEntity, movieEntity.getTitle(), movieEntity.getId().toString()));
         }
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("MovieEntityConverter.movieEntities", movieEntities);
     }
-    
+
     @PreDestroy
-    public void preDestroy()
-    {
+    public void preDestroy() {
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("MovieEntityConverter.movieEntities", null);
     }
-    
-    
+
     public void createNewScreeningSchedule(ActionEvent event) {
-        ScreeningSchedule se = screeningScheduleControllerLocal.createScreeningSchedule(newScreeningSchedule, selectedMovieEntity,hallEntityToViewId);
+        ScreeningSchedule se = screeningScheduleControllerLocal.createScreeningSchedule(newScreeningSchedule, selectedMovieEntity, hallEntityToViewId);
 //        MovieEntity me = (MovieEntity)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("movieName");
 //        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("selectedMovieEntity", me);
         screeningSchedules.add(se);
         filteredScreeningSchedules = screeningSchedules;
         newScreeningSchedule = new ScreeningSchedule();
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New cinema created successfully (Screening Schedule ID: " + se.getId() + ")", null));     
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New cinema created successfully (Screening Schedule ID: " + se.getId() + ")", null));
     }
-    
-    public char[][] seatsArray() {
-        char[][] seating = new char[hallEntityToView.getRow()][hallEntityToView.getCol()];
-        for (int i = 0; i < hallEntityToView.getRow(); i++) {
-            for (int j = 0; j < hallEntityToView.getCol(); j++) {
-                seating[i][j] = 'x';
-            }
-        }
-        return seating;
-    }
-    
-    public void deleteScreeningSchedule (ActionEvent event)
-    {
-        try
-        {
-            ScreeningSchedule ssEntityToDelete = (ScreeningSchedule)event.getComponent().getAttributes().get("ssEntityToDelete");
+
+    public void deleteScreeningSchedule(ActionEvent event) {
+        try {
+            ScreeningSchedule ssEntityToDelete = (ScreeningSchedule) event.getComponent().getAttributes().get("ssEntityToDelete");
             screeningScheduleControllerLocal.deleteScreeningSchedule(ssEntityToDelete.getId());
-            
+
             screeningSchedules.remove(ssEntityToDelete);
             filteredScreeningSchedules.remove(ssEntityToDelete);
 
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Screening Schedule deleted successfully", null));
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
     }
-    
+
     public void updateScreeningSchedule(ActionEvent event) {
-        try
-        {
+        try {
             screeningScheduleControllerLocal.updateScreeningSchedule(selectedScheduleToUpdate, selectedMovieEntityToUpdate, hallEntityToViewId);
 
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Screening Schedule updated successfully", null));
+        } catch (Exception ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
-        catch(Exception ex)
-        {
+    }
+
+    public void updateHandicapSeats(ActionEvent event) {
+        try {
+            hallEntityToViewId = (Long) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("hallIdToView");
+            hallEntityToUpdate = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
+            hallEntityControllerLocal.updateHallHandicapSeats(hallEntityToUpdate, selectedHandicap);
+            hallEntityToView = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
+            hallEntityToView.currentDisabledSeats();
+            hallEntityToView.currentHandicapSeats();
+            hallEntityToView.seatsInArray();
+
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Hall Seating updated successfully", null));
+        } catch (Exception ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
+        }
+    }
+
+    public void deleteHandicapSeats(ActionEvent event) {
+        try {
+            hallEntityToViewId = (Long) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("hallIdToView");
+            hallEntityToUpdate = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
+            hallEntityControllerLocal.removeHallHandicapSeats(hallEntityToUpdate, selectedHandicapToRemove);
+            hallEntityToView = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
+            hallEntityToView.currentDisabledSeats();
+            hallEntityToView.currentHandicapSeats();
+            hallEntityToView.seatsInArray();
+
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Hall Seating updated successfully", null));
+        } catch (Exception ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
+        }
+    }
+
+    public void updateDisabledSeats(ActionEvent event) {
+        try {
+            hallEntityToViewId = (Long) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("hallIdToView");
+            hallEntityToUpdate = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
+            hallEntityControllerLocal.updateHallDisabledSeats(hallEntityToView, selectedDisabled);
+            hallEntityToView = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
+            hallEntityToView.currentDisabledSeats();
+            hallEntityToView.currentHandicapSeats();
+            hallEntityToView.seatsInArray();
+
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Hall Seating updated successfully", null));
+        } catch (Exception ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
+        }
+    }
+
+    public void deleteDisabledSeats(ActionEvent event) {
+        try {
+            hallEntityToViewId = (Long) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("hallIdToView");
+            hallEntityToUpdate = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
+            hallEntityControllerLocal.removeHallDisabledSeats(hallEntityToUpdate, selectedDisabledToRemove);
+            hallEntityToView = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
+            hallEntityToView.currentDisabledSeats();
+            hallEntityToView.currentHandicapSeats();
+            hallEntityToView.seatsInArray();
+
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Hall Seating updated successfully", null));
+        } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
     }
@@ -219,6 +278,54 @@ public class HallDetailsManagedBean implements Serializable {
 
     public void setSelectedMovieEntityToUpdate(MovieEntity selectedMovieEntityToUpdate) {
         this.selectedMovieEntityToUpdate = selectedMovieEntityToUpdate;
+    }
+
+    public HallEntity getHallEntityToUpdate() {
+        return hallEntityToUpdate;
+    }
+
+    public void setHallEntityToUpdate(HallEntity hallEntityToUpdate) {
+        this.hallEntityToUpdate = hallEntityToUpdate;
+    }
+
+    public List<String> getSelectedHandicap() {
+        return selectedHandicap;
+    }
+
+    public void setSelectedHandicap(List<String> selectedHandicap) {
+        this.selectedHandicap = selectedHandicap;
+    }
+
+    public List<String> getSelectedDisabled() {
+        return selectedDisabled;
+    }
+
+    public void setSelectedDisabled(List<String> selectedDisabled) {
+        this.selectedDisabled = selectedDisabled;
+    }
+
+    public List<String> getSelectedHandicapToRemove() {
+        return selectedHandicapToRemove;
+    }
+
+    public void setSelectedHandicapToRemove(List<String> selectedHandicapToRemove) {
+        this.selectedHandicapToRemove = selectedHandicapToRemove;
+    }
+
+    public List<String> getSelectedDisabledToRemove() {
+        return selectedDisabledToRemove;
+    }
+
+    public void setSelectedDisabledToRemove(List<String> selectedDisabledToRemove) {
+        this.selectedDisabledToRemove = selectedDisabledToRemove;
+    }
+
+    public Date getCurrentDate() {
+        return currentDate;
+    }
+
+    public void setCurrentDate(Date currentDate) {
+        this.currentDate = currentDate;
     }
 
 }

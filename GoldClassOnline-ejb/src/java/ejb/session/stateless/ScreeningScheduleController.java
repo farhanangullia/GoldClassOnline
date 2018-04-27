@@ -8,7 +8,7 @@ package ejb.session.stateless;
 import entity.HallEntity;
 import entity.MovieEntity;
 import entity.ScreeningSchedule;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +52,14 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
         calendar.add(Calendar.MINUTE, 20); //buffer for cleaning up the hall
 
         Date endTime = calendar.getTime();
+
         screeningSchedule.setScreeningEndTime(endTime);
+
+        if (screeningSchedule.getScreeningTime().getDay() == 0 || screeningSchedule.getScreeningTime().getDay() == 6) {
+            screeningSchedule.setPrice(new BigDecimal("15"));
+        } else {
+            screeningSchedule.setPrice(new BigDecimal("10"));
+        }
 
         em.persist(screeningSchedule);
         em.flush();
@@ -75,6 +82,11 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
         calendar.add(Calendar.MINUTE, 20); //buffer for cleaning up the hall
         Date endTime = calendar.getTime();
         ss.setScreeningEndTime(endTime);
+        if (screeningSchedule.getScreeningTime().getDay() == 0 || screeningSchedule.getScreeningTime().getDay() == 6) {
+            ss.setPrice(new BigDecimal("15"));
+        } else {
+            ss.setPrice(new BigDecimal("10"));
+        }
         ejbTimerSessionBeanLocal.createTimer(ss);
 
     }

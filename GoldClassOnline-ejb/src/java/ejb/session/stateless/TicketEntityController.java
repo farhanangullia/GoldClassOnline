@@ -66,7 +66,7 @@ public class TicketEntityController implements TicketEntityControllerLocal {
                 CustomerEntity customer = customerEntityControllerLocal.retrieveCustomerByUsername(username);
                 List<TicketEntity> tickets = new ArrayList<>();
 
-                BigDecimal price = new BigDecimal("10");
+              //  BigDecimal price = new BigDecimal("10");
                 System.out.println("CHECKOUTREQ CONTROLLER  2");
                 for (RemoteCheckoutLineItem remoteCheckoutLineItem : remoteCheckoutLineItems) {
                     for (String seat : remoteCheckoutLineItem.getSeats()) {
@@ -75,7 +75,8 @@ public class TicketEntityController implements TicketEntityControllerLocal {
                         ScreeningSchedule screeningSchedule = screeningScheduleControllerLocal.retrieveScreeningScheduleById(remoteCheckoutLineItem.getScreeningScheduleId());
 
                         //   quantity = remoteCheckoutLineItem.getQuantity();
-                        TicketEntity ticket = new TicketEntity(price, seat, screeningSchedule, customer);
+                 
+                        TicketEntity ticket = new TicketEntity(screeningSchedule.getPrice(), seat, screeningSchedule, customer);
 
                         em.persist(ticket);
                         customer.getTicketEntities().add(ticket);

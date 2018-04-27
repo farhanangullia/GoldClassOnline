@@ -63,23 +63,6 @@ public class DataInitializationSessionBean {
     public void postConstruct() {
         try {
 
-            int iAsciiValue2 = 65; // Currently just the number 9, but we want Tab character
-            // Put the tab character into a string
-            char row;
-            char col;
-
-            String[][] seating = new String[6][6];
-            for (int i = 0; i < 6; i++) {
-                for (int j = 0; j < 6; j++) {
-                    row = (char) (i + 65);
-                    col = (char) (j + 49);
-                    seating[i][j] = "" + row + col;
-                    System.out.print(seating[i][j] + " ");
-                }
-                //System.out.println();
-            }
-
-            //  System.out.println(seating[0][0]);
             staffEntityControllerLocal.retrieveStaffByUsername("manager");
         } catch (StaffNotFoundException ex) {
             initializeData();
@@ -137,7 +120,7 @@ public class DataInitializationSessionBean {
 //                }
 //            }
 //            hallEntity.setSeating(seating);
-            Date calendarStart = new Date(118, 5, 12, 14, 0);
+            Date calendarStart = new Date(118, 5, 10, 14, 0);
 
             ScreeningSchedule screeningSchedule = screeningScheduleControllerLocal.createScreeningSchedule(new ScreeningSchedule(calendarStart), movieEntity, hallEntity.getId());
             screeningSchedule.setEnabled(Boolean.TRUE);

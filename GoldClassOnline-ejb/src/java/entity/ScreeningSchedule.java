@@ -6,9 +6,11 @@
 package entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,7 +20,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
 
 @Entity
 public class ScreeningSchedule implements Serializable {
@@ -32,6 +33,8 @@ public class ScreeningSchedule implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date screeningEndTime;
     private Boolean enabled;
+    @Column(precision = 11, scale = 2)
+    private BigDecimal price;
     @ManyToOne(fetch = FetchType.EAGER)
     private HallEntity hallEntity;
     @ManyToOne(fetch = FetchType.EAGER)
@@ -127,6 +130,20 @@ public class ScreeningSchedule implements Serializable {
 
     public void setScreeningEndTime(Date screeningEndTime) {
         this.screeningEndTime = screeningEndTime;
+    }
+
+    /**
+     * @return the price
+     */
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    /**
+     * @param price the price to set
+     */
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
 }

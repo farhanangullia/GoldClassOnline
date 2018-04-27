@@ -26,5 +26,9 @@ public interface ScreeningScheduleControllerLocal {
     public ScreeningSchedule createScreeningSchedule(ScreeningSchedule screeningSchedule, MovieEntity movieEntity, Long hallEntityID);
 
     public void updateScreeningSchedule(ScreeningSchedule screeningSchedule, MovieEntity movieEntity, Long hallEntityID);
+
+    public List<ScreeningSchedule> retrieveAllScreeningSchedulesByMovie(Long movieId);
+
+    public List<ScreeningSchedule> retrieveAllScreeningSchedulesByCinemaAndMovie(Long movieId, Long cinemaId);
     
 }

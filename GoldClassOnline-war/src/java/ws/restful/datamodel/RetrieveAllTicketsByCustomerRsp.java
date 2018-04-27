@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Farhan Angullia
  */
 @XmlRootElement
-@XmlType(name = "retrieveAllTicketsByCustomer", propOrder = {
+@XmlType(name = "retrieveAllTicketsByCustomerRsp", propOrder = {
     "tickets"
 })
 public class RetrieveAllTicketsByCustomerRsp {

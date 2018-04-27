@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.HallEntity;
 import entity.MovieEntity;
 import entity.ScreeningSchedule;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -19,14 +20,14 @@ import javax.persistence.Query;
 
 /**
  *
- * @author 
+ * @author
  */
 @Stateless
 public class ScreeningScheduleController implements ScreeningScheduleControllerLocal {
 
     @EJB
     private HallEntityControllerLocal hallEntityControllerLocal;
-    
+
     @EJB
     private EJBTimerSessionBeanLocal ejbTimerSessionBeanLocal;
 
@@ -38,21 +39,21 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
     }
 
     @Override
-    public ScreeningSchedule createScreeningSchedule(ScreeningSchedule screeningSchedule, MovieEntity movieEntity,Long hallEntityID) {
+    public ScreeningSchedule createScreeningSchedule(ScreeningSchedule screeningSchedule, MovieEntity movieEntity, Long hallEntityID) {
         HallEntity hallEntity = hallEntityControllerLocal.retrieveHallByHallId(hallEntityID);
         screeningSchedule.setHallEntity(hallEntity);
         hallEntity.getScreeningSchedules().add(screeningSchedule);
         screeningSchedule.setMovieEntity(movieEntity);
         movieEntity.getScreeningSchedules().add(screeningSchedule);
-        
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(screeningSchedule.getScreeningTime());
         calendar.add(Calendar.MINUTE, movieEntity.getRunningTime());
         calendar.add(Calendar.MINUTE, 20); //buffer for cleaning up the hall
-        
+
         Date endTime = calendar.getTime();
         screeningSchedule.setScreeningEndTime(endTime);
-        
+
         em.persist(screeningSchedule);
         em.flush();
         em.refresh(screeningSchedule);
@@ -62,8 +63,8 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
     }
 
     @Override
-    public void updateScreeningSchedule(ScreeningSchedule screeningSchedule, MovieEntity movieEntity,Long hallEntityID) {
-        
+    public void updateScreeningSchedule(ScreeningSchedule screeningSchedule, MovieEntity movieEntity, Long hallEntityID) {
+
         ScreeningSchedule ss = em.find(ScreeningSchedule.class, screeningSchedule.getId());
         ss.setScreeningTime(screeningSchedule.getScreeningTime());
         ss.setMovieEntity(movieEntity);
@@ -75,7 +76,7 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
         Date endTime = calendar.getTime();
         ss.setScreeningEndTime(endTime);
         ejbTimerSessionBeanLocal.createTimer(ss);
- 
+
     }
 
     @Override
@@ -98,4 +99,24 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
         ScreeningSchedule ssEntityToRemove = retrieveScreeningScheduleById(hallId);
         ssEntityToRemove.setEnabled(Boolean.FALSE);
     }
+
+    @Override
+    public List<ScreeningSchedule> retrieveAllScreeningSchedulesByMovie(Long movieId) { //how
+
+        Query query = em.createQuery("SELECT ss FROM ScreeningSchedule ss WHERE ss.movieEntity.id=:inMovieId");
+        query.setParameter("inMovieId", movieId);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<ScreeningSchedule> retrieveAllScreeningSchedulesByCinemaAndMovie(Long movieId, Long cinemaId) { //how
+
+        Query query = em.createQuery("SELECT ss FROM ScreeningSchedule ss WHERE ss.movieEntity.id=:inMovieId AND ss.hallEntity.cinemaEntity.id=:inCinemaId");
+        query.setParameter("inMovieId", movieId);
+        query.setParameter("inCinemaId", cinemaId);
+
+        return query.getResultList();
+    }
+
 }

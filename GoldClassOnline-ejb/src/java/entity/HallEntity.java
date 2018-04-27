@@ -16,7 +16,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-
 @Entity
 public class HallEntity implements Serializable {
 
@@ -27,16 +26,16 @@ public class HallEntity implements Serializable {
     private String name;
     private Integer row;
     private Integer col;
-    private String [][] seating; 
+    private String[][] seating;
     private Boolean enabled;
     @ManyToOne(fetch = FetchType.EAGER)
     private CinemaEntity cinemaEntity;
-    @OneToMany (mappedBy="hallEntity", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "hallEntity", fetch = FetchType.EAGER)
     private List<ScreeningSchedule> screeningSchedules;
 
-     public HallEntity() {
-         this.enabled = true;
-         screeningSchedules = new ArrayList<>();
+    public HallEntity() {
+        this.enabled = true;
+        screeningSchedules = new ArrayList<>();
     }
 
     public HallEntity(String name, Integer row, Integer col) {
@@ -141,5 +140,48 @@ public class HallEntity implements Serializable {
         this.seating = seating;
     }
 
+    public List<String> seatsInArray() {
+        List<String> seatsToArray = new ArrayList<>();
+        List<String> seatsToArray2 = new ArrayList<>();
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (seating[i][j].equals("X") || seating[i][j].contains("(H)")) {
+                    seatsToArray2.add(seating[i][j]);
+                } else {
+                    seatsToArray.add(seating[i][j]);
+                }
+            }
+        }
+        return seatsToArray;
+    }
+
+    public List<String> currentDisabledSeats() {
+        List<String> seatsToArray = new ArrayList<>();
+        String[][] seating2 = new String[row][col];
+        char r, c;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (seating[i][j].equals("X")) {
+                    r = (char) (i + 65);
+                    c = (char) (j + 49);
+                    seating2[i][j] = "" + r + c;
+                    seatsToArray.add(seating2[i][j]);
+                }
+            }
+        }
+        return seatsToArray;
+    }
+
+    public List<String> currentHandicapSeats() {
+        List<String> seatsToArray = new ArrayList<>();
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (seating[i][j].contains("(H)")) {
+                    seatsToArray.add(seating[i][j]);
+                }
+            }
+        }
+        return seatsToArray;
+    }
 
 }

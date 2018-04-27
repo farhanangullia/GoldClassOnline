@@ -67,6 +67,38 @@ public class HallEntityController implements HallEntityControllerLocal {
     }
 
     @Override
+    public void updateHallHandicapSeats(HallEntity hallEntity, List<String> handicapSeats) {
+        HallEntity he = retrieveHallByHallId(hallEntity.getId());
+
+        String[][] seating = he.getSeating();
+
+        for (int i = 0; i < he.getRow(); i++) {
+            for (int j = 0; j < he.getCol(); j++) {
+                if (handicapSeats.contains(seating[i][j])) {
+                    seating[i][j] = "Handicap" + seating[i][j];
+                }
+            }
+        }
+        he.setSeating(seating);
+    }
+
+    @Override
+    public void updateHallDisabledSeats(HallEntity hallEntity, List<String> disabledSeats) {
+        HallEntity he = retrieveHallByHallId(hallEntity.getId());
+
+        String[][] seating = he.getSeating();
+
+        for (int i = 0; i < he.getRow(); i++) {
+            for (int j = 0; j < he.getCol(); j++) {
+                if (disabledSeats.contains(seating[i][j])) {
+                    seating[i][j] = "X";
+                }
+            }
+        }
+        he.setSeating(seating);
+    }
+
+    @Override
     public void updateHallEntityWithCinemaEntity(HallEntity hallEntity, CinemaEntity cinemaEntity) {
         HallEntity he = retrieveHallByHallId(hallEntity.getId());
         he.setRow(hallEntity.getRow());
@@ -84,6 +116,7 @@ public class HallEntityController implements HallEntityControllerLocal {
         }
         he.setSeating(seating);
     }
+
     @Override
     public List<HallEntity> retrieveAllHalls(Long cinemaId) {
         Query query = em.createQuery("SELECT h FROM HallEntity h WHERE h.cinemaEntity.id = :inCinemaId AND h.enabled=1");

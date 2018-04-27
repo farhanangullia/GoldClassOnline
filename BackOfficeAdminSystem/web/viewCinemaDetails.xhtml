@@ -69,7 +69,7 @@
         <h:form id="formAllHalls">
 
             <p:messages id="messages" redisplay="false" closable="true" />
-
+            <p:poll interval="10" listener="#{hallManagementManagedBean.retrieveHalls()}" update="@form"/>
             <p:dataTable id="dataTableAllHalls" var="hallEntity" value="#{hallManagementManagedBean.hallEntities}">
                 <p:column headerText="Hall Id">
                     <h:outputText value="#{hallEntity.id}" />

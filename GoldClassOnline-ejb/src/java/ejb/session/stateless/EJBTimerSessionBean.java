@@ -39,7 +39,7 @@ public class EJBTimerSessionBean implements EJBTimerSessionBeanLocal {
     public void createTimer(ScreeningSchedule screeningSchedule) {
         TimerService timerService = sessionContext.getTimerService();
         ScheduleExpression schedule = new ScheduleExpression();
-        Date date = screeningSchedule.getScreeningEndTime();
+        Date date = screeningSchedule.getScreeningTime();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         schedule.year(calendar.get(Calendar.YEAR)).month(calendar.get(Calendar.MONTH) + 1).dayOfMonth(calendar.get(Calendar.DAY_OF_MONTH)).hour(calendar.get(Calendar.HOUR_OF_DAY)).minute(calendar.get(Calendar.MINUTE));
@@ -59,7 +59,6 @@ public class EJBTimerSessionBean implements EJBTimerSessionBeanLocal {
         if (type.equals(comparison)) {
             ScreeningSchedule ss = em.find(ScreeningSchedule.class, id);
             ss.setEnabled(Boolean.FALSE);
-           // System.err.println("TIMEOUTTTT");
     }
     }
 }

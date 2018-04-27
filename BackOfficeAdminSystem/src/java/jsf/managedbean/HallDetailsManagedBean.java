@@ -92,6 +92,8 @@ public class HallDetailsManagedBean implements Serializable {
     
     public void createNewScreeningSchedule(ActionEvent event) {
         ScreeningSchedule se = screeningScheduleControllerLocal.createScreeningSchedule(newScreeningSchedule, selectedMovieEntity,hallEntityToViewId);
+//        MovieEntity me = (MovieEntity)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("movieName");
+//        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("selectedMovieEntity", me);
         screeningSchedules.add(se);
         filteredScreeningSchedules = screeningSchedules;
         newScreeningSchedule = new ScreeningSchedule();

@@ -106,6 +106,12 @@ public class HallManagementManagedBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
     }
+     
+     public void retrieveHalls() {
+         cinemaEntityToViewId = (Long)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("cinemaIdToView");
+        hallEntities = hallEntityControllerLocal.retrieveAllHalls(cinemaEntityToViewId);
+        cinemaEntityToView = cinemaEntityControllerLocal.retrieveCinemaByCinemaId(cinemaEntityToViewId);
+     }
 
     public CinemaEntity getCinemaEntityToView() {
         return cinemaEntityToView;

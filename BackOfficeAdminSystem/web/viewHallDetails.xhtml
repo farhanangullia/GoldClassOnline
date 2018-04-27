@@ -113,6 +113,7 @@
                             <p:selectOneMenu id ="movieName" value ="#{hallDetailsManagedBean.selectedMovieEntity}" converter="movieEntityConverter" required="true" requiredMessage="Movie title is required">
                                 <f:selectItem itemLabel="Select One" itemValue="" />
                                 <f:selectItems value="#{hallDetailsManagedBean.selectItems}" />
+                                <f:attribute name="selectedMovieEntity" value="#{movieEntity}"/>
                             </p:selectOneMenu>
                         </p:column>
                         <p:message for="movieName" />

@@ -103,7 +103,7 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
     @Override
     public List<ScreeningSchedule> retrieveAllScreeningSchedulesByMovie(Long movieId) { //how
 
-        Query query = em.createQuery("SELECT ss FROM ScreeningSchedule ss WHERE ss.movieEntity.id=:inMovieId");
+        Query query = em.createQuery("SELECT ss FROM ScreeningSchedule ss WHERE ss.movieEntity.id=:inMovieId AND ss.enabled=1");
         query.setParameter("inMovieId", movieId);
 
         return query.getResultList();
@@ -112,7 +112,7 @@ public class ScreeningScheduleController implements ScreeningScheduleControllerL
     @Override
     public List<ScreeningSchedule> retrieveAllScreeningSchedulesByCinemaAndMovie(Long movieId, Long cinemaId) { //how
 
-        Query query = em.createQuery("SELECT ss FROM ScreeningSchedule ss WHERE ss.movieEntity.id=:inMovieId AND ss.hallEntity.cinemaEntity.id=:inCinemaId");
+        Query query = em.createQuery("SELECT ss FROM ScreeningSchedule ss WHERE ss.movieEntity.id=:inMovieId AND ss.hallEntity.cinemaEntity.id=:inCinemaId AND ss.enabled=1");
         query.setParameter("inMovieId", movieId);
         query.setParameter("inCinemaId", cinemaId);
 

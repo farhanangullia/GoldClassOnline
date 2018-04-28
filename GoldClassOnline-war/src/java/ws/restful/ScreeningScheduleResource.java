@@ -55,7 +55,8 @@ public class ScreeningScheduleResource {
 
             for (ScreeningSchedule ss : screeningSchedules) {
 
-                ss.setHallEntity(null);
+                ss.getHallEntity().getScreeningSchedules().clear();
+                ss.getHallEntity().getCinemaEntity().getHalls().clear();
                 ss.getTicketEntities().clear();
                 ss.setMovieEntity(null);
 
@@ -84,7 +85,8 @@ public class ScreeningScheduleResource {
 
             for (ScreeningSchedule ss : screeningSchedules) {
 
-                ss.setHallEntity(null);
+                ss.getHallEntity().getScreeningSchedules().clear();
+                ss.getHallEntity().getCinemaEntity().getHalls().clear();
                 ss.getTicketEntities().clear();
                 ss.setMovieEntity(null);
             }

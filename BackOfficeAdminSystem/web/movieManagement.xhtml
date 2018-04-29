@@ -146,10 +146,10 @@
                     
                     <p:row>
                         <p:column>
-                            <p:outputLabel for="runningTime" value="Run Time: " />
+                            <p:outputLabel for="runningTime" value="Run Time(Mins): " />
                         </p:column>
                         <p:column>
-                            <p:inputText id="runningTime" value="#{movieManagementManagedBean.newMovieEntity.runningTime}" required="true" requiredMessage="Running Time is required" />
+                            <p:inputNumber id="runningTime" value="#{movieManagementManagedBean.newMovieEntity.runningTime}" required="true" requiredMessage="Running Time is required" />
                         </p:column>
                             <p:message for="runningTime" />
                     </p:row>
@@ -191,11 +191,21 @@
                         </p:selectOneMenu>
                              </p:column>
                     </p:row>
+                    
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="movieImg" value="Image Path URL: " />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="movieImg" value="#{movieManagementManagedBean.newMovieEntity.imagePath}" required="true" requiredMessage="Image path is required" />
+                        </p:column>
+                            <p:message for="movieImg" />
+                    </p:row>
           
                     <p:row>
                         <p:column colspan="3">
                             <p:commandButton type="reset" value="Clear" />&nbsp;
-                            <p:commandButton value="Create New Movie" update="@form formAllMovies:dataTableAllMovies" actionListener="#{movieManagementManagedBean.createNewMovie}" oncomplete="PF('dialogCreateNewMovie').show();" />
+                            <p:commandButton value="Create New Movie" update="@form formAllMovies:dataTableAllMovies formAllMovies:messages" actionListener="#{movieManagementManagedBean.createNewMovie}" oncomplete="PF('dialogCreateNewMovie').hide();" />
                         </p:column>
                     </p:row>
                     
@@ -329,7 +339,7 @@
                     
                     <p:row>
                         <p:column>
-                            <p:outputLabel for="cast" value="CAST: " />
+                            <p:outputLabel for="cast" value="Casts: " />
                         </p:column>
                         <p:column>
                             <p:inputText id="cast" value="#{movieManagementManagedBean.selectedMovieEntityToUpdate.cast}" required="true" requiredMessage="Casts' name are required" />
@@ -349,10 +359,10 @@
                     
                      <p:row>
                         <p:column>
-                            <p:outputLabel for="runningTime" value="Run Time: " />
+                            <p:outputLabel for="runningTime" value="Run Time(Mins): " />
                         </p:column>
                         <p:column>
-                            <p:inputText id="runningTime" value="#{movieManagementManagedBean.selectedMovieEntityToUpdate.runningTime}" required="true" requiredMessage="Running Time is required" />
+                            <p:inputNumber id="runningTime" value="#{movieManagementManagedBean.selectedMovieEntityToUpdate.runningTime}" required="true" requiredMessage="Running Time is required" />
                         </p:column>
                             <p:message for="runningTime" />
                     </p:row>
@@ -396,8 +406,18 @@
                     </p:row>
                     
                     <p:row>
+                        <p:column>
+                            <p:outputLabel for="movieImg" value="Image Path URL: " />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="movieImg" value="#{movieManagementManagedBean.selectedMovieEntityToUpdate.imagePath}" required="true" requiredMessage="Image path is required" />
+                        </p:column>
+                            <p:message for="movieImg" />
+                    </p:row>
+                    
+                    <p:row>
                         <p:column colspan="3">
-                            <p:commandButton value="Update Movie" update="@form formAllMovies:dataTableAllMovies" actionListener="#{movieManagementManagedBean.updateMovie}" oncomplete="PF('dialogUpdateMovie').show();" />
+                            <p:commandButton value="Update Movie" update="@form formAllMovies:dataTableAllMovies" actionListener="#{movieManagementManagedBean.updateMovie}" oncomplete="PF('dialogUpdateMovie').hide();" />
                         </p:column>
                     </p:row>
                     

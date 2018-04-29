@@ -13,6 +13,7 @@ import entity.MovieEntity;
 import entity.ScreeningSchedule;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -54,7 +55,9 @@ public class HallDetailsManagedBean implements Serializable {
 
     private List<ScreeningSchedule> screeningSchedules;
     private List<ScreeningSchedule> filteredScreeningSchedules;
+    private List<ScreeningSchedule> retrieveAllSS;
     private List<SelectItem> selectItems;
+    private SelectItem selectedItem;
 
     private List<MovieEntity> movieEntities;
 
@@ -63,16 +66,25 @@ public class HallDetailsManagedBean implements Serializable {
     private List<String> selectedDisabled;
     private List<String> selectedDisabledToRemove;
 
+    private List<String> seatsInArray;
+    private List<String> currentDisabledSeats;
+    private List<String> currentHandicapSeats;
+
     private Date currentDate;
+    private Date selectedSSDate;
 
     public HallDetailsManagedBean() {
         hallEntityToView = new HallEntity();
         hallEntityToUpdate = new HallEntity();
         screeningSchedules = new ArrayList<>();
         filteredScreeningSchedules = new ArrayList<>();
+        retrieveAllSS = new ArrayList<>();
         movieEntities = new ArrayList<>();
         newScreeningSchedule = new ScreeningSchedule();
         selectItems = new ArrayList<>();
+
+        selectedItem = new SelectItem();
+
         selectedMovieEntity = new MovieEntity();
         selectedMovieEntityToUpdate = new MovieEntity();
 
@@ -81,6 +93,11 @@ public class HallDetailsManagedBean implements Serializable {
         selectedHandicapToRemove = new ArrayList<>();
         selectedDisabledToRemove = new ArrayList<>();
         currentDate = new Date();
+        selectedSSDate = new Date();
+
+        seatsInArray = new ArrayList<>();
+        currentDisabledSeats = new ArrayList<>();
+        currentHandicapSeats = new ArrayList<>();
 
     }
 
@@ -91,6 +108,9 @@ public class HallDetailsManagedBean implements Serializable {
         screeningSchedules = screeningScheduleControllerLocal.retrieveAllScreeningSchedules(hallEntityToViewId);
         filteredScreeningSchedules = screeningSchedules;
         movieEntities = movieEntityControllerLocal.retrieveAllMovieEntities();
+        seatsInArray = hallEntityToView.seatsInArray();
+        currentDisabledSeats = hallEntityToView.currentDisabledSeats();
+        currentHandicapSeats = hallEntityToView.currentHandicapSeats();
         for (MovieEntity movieEntity : movieEntities) {
             selectItems.add(new SelectItem(movieEntity, movieEntity.getTitle(), movieEntity.getId().toString()));
         }
@@ -103,13 +123,29 @@ public class HallDetailsManagedBean implements Serializable {
     }
 
     public void createNewScreeningSchedule(ActionEvent event) {
-        ScreeningSchedule se = screeningScheduleControllerLocal.createScreeningSchedule(newScreeningSchedule, selectedMovieEntity, hallEntityToViewId);
-//        MovieEntity me = (MovieEntity)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("movieName");
-//        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("selectedMovieEntity", me);
-        screeningSchedules.add(se);
-        filteredScreeningSchedules = screeningSchedules;
-        newScreeningSchedule = new ScreeningSchedule();
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New cinema created successfully (Screening Schedule ID: " + se.getId() + ")", null));
+
+        retrieveAllSS = screeningScheduleControllerLocal.retrieveAllScreeningSchedules(hallEntityToViewId);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(newScreeningSchedule.getScreeningTime());
+        calendar.add(Calendar.MINUTE, selectedMovieEntity.getRunningTime());
+        calendar.add(Calendar.MINUTE, 20); // cleaning up
+        selectedSSDate = calendar.getTime();
+        int count = 0;
+        for (ScreeningSchedule ss : retrieveAllSS) {
+            if (selectedSSDate.after(ss.getScreeningTime()) && selectedSSDate.before(ss.getScreeningEndTime())) {
+                count++;
+            }
+        }
+       // System.err.println("count: " + count);
+        if (count > 0) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "There is a clash in screening schedule timing!", null));
+        } else if (count == 0) {
+            ScreeningSchedule se = screeningScheduleControllerLocal.createScreeningSchedule(newScreeningSchedule, selectedMovieEntity, hallEntityToViewId);
+            screeningSchedules.add(se);
+            filteredScreeningSchedules = screeningSchedules;
+            newScreeningSchedule = new ScreeningSchedule();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New screening schedule created successfully (ID: " + se.getId() + ")", null));
+        }
     }
 
     public void deleteScreeningSchedule(ActionEvent event) {
@@ -128,8 +164,23 @@ public class HallDetailsManagedBean implements Serializable {
 
     public void updateScreeningSchedule(ActionEvent event) {
         try {
+        retrieveAllSS = screeningScheduleControllerLocal.retrieveAllScreeningSchedules(hallEntityToViewId);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectedScheduleToUpdate.getScreeningTime());
+        calendar.add(Calendar.MINUTE, selectedMovieEntityToUpdate.getRunningTime());
+        calendar.add(Calendar.MINUTE, 20); // cleaning up
+        selectedSSDate = calendar.getTime();
+        int count = 0;
+        for (ScreeningSchedule ss : retrieveAllSS) {
+            if (selectedSSDate.after(ss.getScreeningTime()) && selectedSSDate.before(ss.getScreeningEndTime())) {
+                count++;
+            }
+        }
+        if (count > 0) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "There is a clash in screening schedule timing!", null));
+        } else if (count == 0) {
             screeningScheduleControllerLocal.updateScreeningSchedule(selectedScheduleToUpdate, selectedMovieEntityToUpdate, hallEntityToViewId);
-
+        }
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Screening Schedule updated successfully", null));
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
@@ -142,11 +193,7 @@ public class HallDetailsManagedBean implements Serializable {
             hallEntityToUpdate = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
             hallEntityControllerLocal.updateHallHandicapSeats(hallEntityToUpdate, selectedHandicap);
             hallEntityToView = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
-            hallEntityToView.currentDisabledSeats();
-            hallEntityToView.currentHandicapSeats();
-            hallEntityToView.seatsInArray();
-
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Hall Seating updated successfully", null));
+            FacesContext.getCurrentInstance().getExternalContext().redirect("viewHallDetails.xhtml");
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
@@ -158,11 +205,7 @@ public class HallDetailsManagedBean implements Serializable {
             hallEntityToUpdate = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
             hallEntityControllerLocal.removeHallHandicapSeats(hallEntityToUpdate, selectedHandicapToRemove);
             hallEntityToView = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
-            hallEntityToView.currentDisabledSeats();
-            hallEntityToView.currentHandicapSeats();
-            hallEntityToView.seatsInArray();
-
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Hall Seating updated successfully", null));
+            FacesContext.getCurrentInstance().getExternalContext().redirect("viewHallDetails.xhtml");          
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
@@ -174,11 +217,8 @@ public class HallDetailsManagedBean implements Serializable {
             hallEntityToUpdate = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
             hallEntityControllerLocal.updateHallDisabledSeats(hallEntityToView, selectedDisabled);
             hallEntityToView = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
-            hallEntityToView.currentDisabledSeats();
-            hallEntityToView.currentHandicapSeats();
-            hallEntityToView.seatsInArray();
-
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Hall Seating updated successfully", null));
+            FacesContext.getCurrentInstance().getExternalContext().redirect("viewHallDetails.xhtml");
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
@@ -190,11 +230,7 @@ public class HallDetailsManagedBean implements Serializable {
             hallEntityToUpdate = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
             hallEntityControllerLocal.removeHallDisabledSeats(hallEntityToUpdate, selectedDisabledToRemove);
             hallEntityToView = hallEntityControllerLocal.retrieveHallByHallId(hallEntityToViewId);
-            hallEntityToView.currentDisabledSeats();
-            hallEntityToView.currentHandicapSeats();
-            hallEntityToView.seatsInArray();
-
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Hall Seating updated successfully", null));
+            FacesContext.getCurrentInstance().getExternalContext().redirect("viewHallDetails.xhtml");
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
@@ -326,6 +362,54 @@ public class HallDetailsManagedBean implements Serializable {
 
     public void setCurrentDate(Date currentDate) {
         this.currentDate = currentDate;
+    }
+
+    public List<String> getSeatsInArray() {
+        return seatsInArray;
+    }
+
+    public void setSeatsInArray(List<String> seatsInArray) {
+        this.seatsInArray = seatsInArray;
+    }
+
+    public List<String> getCurrentDisabledSeats() {
+        return currentDisabledSeats;
+    }
+
+    public void setCurrentDisabledSeats(List<String> currentDisabledSeats) {
+        this.currentDisabledSeats = currentDisabledSeats;
+    }
+
+    public List<String> getCurrentHandicapSeats() {
+        return currentHandicapSeats;
+    }
+
+    public void setCurrentHandicapSeats(List<String> currentHandicapSeats) {
+        this.currentHandicapSeats = currentHandicapSeats;
+    }
+
+    public SelectItem getSelectedItem() {
+        return selectedItem;
+    }
+
+    public void setSelectedItem(SelectItem selectedItem) {
+        this.selectedItem = selectedItem;
+    }
+
+    public List<ScreeningSchedule> getRetrieveAllSS() {
+        return retrieveAllSS;
+    }
+
+    public void setRetrieveAllSS(List<ScreeningSchedule> retrieveAllSS) {
+        this.retrieveAllSS = retrieveAllSS;
+    }
+
+    public Date getSelectedSSDate() {
+        return selectedSSDate;
+    }
+
+    public void setSelectedSSDate(Date selectedSSDate) {
+        this.selectedSSDate = selectedSSDate;
     }
 
 }

@@ -45,6 +45,7 @@ public class MovieEntityController implements MovieEntityControllerLocal {
         me.setRunningTime(movieEntity.getRunningTime());
         me.setSypnosis(movieEntity.getSypnosis());
         me.setTitle(movieEntity.getTitle());
+        me.setImagePath(movieEntity.getImagePath());
     }
 
     @Override
